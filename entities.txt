@@ -1,0 +1,78 @@
+User extends BaseEntity:
+    code: string //  generated
+    password: string
+    name: string
+    whatsappPhone: string
+    gender: boolean
+    age: number
+    approved: boolean
+    forgetPassToken?: string
+
+Admin extends User:
+    groups: Group[]
+    fees: Fees[]
+
+Teacher extends User:
+    evaluations: Evaluation[]
+    shariaEvaluations: ShariaEvaluation[]
+
+Student extends User:
+    currentSurah: number => 1 => 114
+    currentAyah?: number
+    fees: Fees[]
+    groups: Group[]
+
+Fees:
+    adminId: number
+    groupId: number
+    studentId: number
+    year: DateYear
+    month: DateMonth
+    price: number // in EGP
+
+GroupEnum:
+    Quraan = quraan
+    Sharia = sharia
+
+Group extends BaseEntity:
+    adminId: number
+    name: string
+    type: GroupEnum
+    gender: boolean
+    students: Student[]
+
+Revision:
+    startSurah: number => 1 => 114
+    endSurah: number => 1 => 114
+    grade?: number => 0 => 5
+
+NewSurah:
+    startAyah: number
+    endAyah: number
+    grade?: number => 0 => 5
+
+Evaluation:
+    takenAt: Date and time
+    groupId: number
+    studentId: number
+    teacherId: number
+    ethicsGrade: boolean
+    duration: number // in minutes
+
+QuraanEvaluation extends Evaluation:
+    currentRevision: Revision
+    nextRevision: Revision
+    currentNewSurah: NewSurah
+    nextNewSurah: NewSurah
+    tajweedGrade: number => 0 => 5
+
+ShariaEvaluation extends Evaluation:
+    attended: boolean
+
+ExamEvaluation extends BaseEntity:
+    name: string
+    groupId: number
+    studentId: number
+    groupType: GroupEnum
+    finalScore: number
+    grade: number

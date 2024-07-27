@@ -1,0 +1,40 @@
+Auth:
+    1. Teacher and Student signup: backend will generate code.
+    2. Admin seeds: initially only one admin will be seeded.
+    3. All users login: code and password.
+    4. Forget password: user sends a forget pass request, then backend will insert forgetPassToken into User, 
+        then admin will fetch forgottend password users, 
+        then frontend will show table of these users and corresponding forget password link (appending current frontend host and the route of reset password),
+        then admin will manually send the link to the user's whatsappPhone.
+    5. Reset password:
+        if token is expired, return error, set forgetPassToken with null,
+        user enters reset pass link, frontend will send code, token, newPassword,
+        then the backend validates and resets the password and set forgetPassToken with null,
+        then frontend redirects him to login page.
+    6. Change password:
+        frontend send oldPassword, newPassword.
+
+Student:
+    1. Could see his profile.
+    2. Could update profile.
+    3. Could see his Evaluation and ShariaEvaluation, filtering by date (2024-05-18).
+
+Teacher:
+    1. Could see his profile.
+    2. Could update profile.
+    3. Could read groups basic info and group students with same gender.
+    4. Could add/update QuraanEvaluation & ShariaEvaluation.
+
+Admin:
+    1. Could see his profile.
+    2. Could update profile.
+    3. Could read/add/update/delete groups.
+    4. Could add/update/delete QuraanEvaluation & ShariaEvaluation.
+    5. Could add/update/delete ExamEvaluation.
+    6. Could delete Student and Teacher.
+    7. Could add/delete student to/from a group.
+    8. Could view a list of pending signups, and could approve anyone.
+    9. Could view a list of forgotten password users.
+    10. Could view a list of students, and delete anyone.
+    11. Could view a list of teachers, and delete anyone.
+    12. Could view a teacher stats, currently it is only summed duration of both QuraanEvaluation & ShariaEvaluation, sending (2024-05).
