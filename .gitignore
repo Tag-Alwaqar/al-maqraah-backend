@@ -46,3 +46,5 @@ web.json
 
 downloads/*
 uploads/*
+
+*.data.ts

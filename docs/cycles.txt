@@ -24,6 +24,7 @@ Teacher:
     2. Could update profile.
     3. Could read groups basic info and group students with same gender.
     4. Could add/update QuraanEvaluation & ShariaEvaluation.
+        On adding QuraanEvaluation, backend updates current_surah & current_ayah in student.
 
 Admin:
     1. Could see his profile.

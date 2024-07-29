@@ -7,11 +7,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { ClsService } from 'nestjs-cls';
+import { RequestContext } from '@common/utils/request-context.utils';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: console,
-  });
+  const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Removes all invalid data from body
@@ -19,7 +18,9 @@ async function bootstrap() {
     }),
   );
   const configService = app.get(ConfigService);
-  // RequestContext.setCls(app.get(ClsService));
+
+  RequestContext.setCls(app.get(ClsService));
+
   app.use(
     session({
       secret: configService.get<string>('SESSION_SECRET'),
@@ -27,6 +28,9 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
+
+  app.setGlobalPrefix('api');
+
   app.use(passport.initialize());
   app.use(passport.session());
 

@@ -2,32 +2,39 @@ User extends BaseEntity:
     code: string //  generated
     password: string
     name: string
-    whatsappPhone: string
+    phone: string
     gender: boolean
-    age: number
+    born_at: Date // (2000-10-10)
     approved: boolean
-    forgetPassToken?: string
+    forget_pass_token?: string
+    admin?: Admin
+    teacher?: Teacher
+    student?: Student
 
-Admin extends User:
+Admin:
+    user: User
     groups: Group[]
     fees: Fees[]
 
-Teacher extends User:
-    evaluations: Evaluation[]
-    shariaEvaluations: ShariaEvaluation[]
+Teacher:
+    user: User
+    quraan_evaluations: QuraanEvaluation[]
+    sharia_evaluations: ShariaEvaluation[]
 
-Student extends User:
-    currentSurah: number => 1 => 114
-    currentAyah?: number
-    fees: Fees[]
+Student:
+    user: User
+    current_surah: number => 1 => 114
+    current_ayah?: number
     groups: Group[]
+    fees: Fees[]
+    quraan_evaluations: QuraanEvaluation[]
+    sharia_evaluations: ShariaEvaluation[]
 
 Fees:
-    adminId: number
-    groupId: number
-    studentId: number
-    year: DateYear
-    month: DateMonth
+    admin_id: number
+    group_id: number
+    student_id: number
+    paid_at: Date // (2024-08-01)
     price: number // in EGP
 
 GroupEnum:
@@ -35,44 +42,46 @@ GroupEnum:
     Sharia = sharia
 
 Group extends BaseEntity:
-    adminId: number
+    admin_id: number
     name: string
     type: GroupEnum
     gender: boolean
     students: Student[]
+    quraan_evaluations: QuraanEvaluation[]
+    sharia_evaluations: ShariaEvaluation[]
 
 Revision:
-    startSurah: number => 1 => 114
-    endSurah: number => 1 => 114
+    start_surah: number => 1 => 114
+    end_surah: number => 1 => 114
     grade?: number => 0 => 5
 
 NewSurah:
-    startAyah: number
-    endAyah: number
+    start_ayah: number
+    end_ayah: number
     grade?: number => 0 => 5
 
 Evaluation:
-    takenAt: Date and time
-    groupId: number
-    studentId: number
-    teacherId: number
-    ethicsGrade: boolean
+    taken_at: Date and time
+    group_id: number
+    student_id: number
+    teacher_id: number
+    ethics_grade: boolean
     duration: number // in minutes
 
 QuraanEvaluation extends Evaluation:
-    currentRevision: Revision
-    nextRevision: Revision
-    currentNewSurah: NewSurah
-    nextNewSurah: NewSurah
-    tajweedGrade: number => 0 => 5
+    current_revision: Revision
+    next_revision: Revision
+    current_new_surah: NewSurah
+    next_new_surah: NewSurah
+    tajweed_grade: number => 0 => 5
 
 ShariaEvaluation extends Evaluation:
     attended: boolean
 
 ExamEvaluation extends BaseEntity:
     name: string
-    groupId: number
-    studentId: number
-    groupType: GroupEnum
-    finalScore: number
+    group_id: number
+    student_id: number
+    group_type: GroupEnum
+    final_score: number
     grade: number
