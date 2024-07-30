@@ -91,11 +91,6 @@ export class AuthService {
     user.forget_pass_token = token;
 
     await this.usersService.update(user);
-
-    return {
-      message:
-        'سيقوم المشرف بإرسال رابط تغيير كلمة السر إلى رقمك علر الواتساب، يُرجى انتظاره فهذه العملية تأخذ بعض الوقت',
-    };
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
@@ -108,13 +103,13 @@ export class AuthService {
       );
     }
 
-    const user: User = await this.usersService.findOneById(token.id);
-
-    if (!user) {
-      throw new NotFoundException('هذا المستخدم غير موجود');
-    }
+    const user: User = await this.usersService.findOneByIdAndToken(
+      token.id,
+      resetPasswordDto.token,
+    );
 
     if (
+      !user ||
       user.forget_pass_token !== resetPasswordDto.token ||
       user.code !== resetPasswordDto.code
     ) {

@@ -43,6 +43,12 @@ export class UsersService {
     });
   }
 
+  async findOneByIdAndToken(id: number, token: string): Promise<User | null> {
+    return await this.usersRepository.findOne({
+      where: { id, forget_pass_token: token },
+    });
+  }
+
   async findOneByCodeWithPassword(code: string): Promise<User | null> {
     return await this.usersRepository.findOne({
       where: { code },

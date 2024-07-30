@@ -6,11 +6,14 @@ import {
   Body,
   Get,
   Controller,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '@user/authentication/auth.service';
 import { User } from '@user/authentication/decorators/user.decorator';
 import { ChangePasswordDto } from '@user/authentication/dtos/change-password.dto';
+import { ForgetPasswordDto } from '@user/authentication/dtos/forget-password.dto';
+import { ResetPasswordDto } from '@user/authentication/dtos/reset-password.dto';
 import {
   SignupDto,
   LoginSignupResponseDto,
@@ -40,6 +43,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   async login(@Request() req: any) {
     const token = await this.authService.generateToken(req.user);
@@ -59,6 +63,7 @@ export class AuthController {
   }
 
   @Post('change-password')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async changePassword(
     @User() userInfo: UserInfo,
@@ -71,13 +76,24 @@ export class AuthController {
     };
   }
 
-  // @Post('forget-password')
-  // async forgetPassword(@Body() forgetPasswordDto: ForgetUserPasswordDto) {
-  //   await this.authService.forgetPassword(forgetPasswordDto);
-  // }
+  @Post('forget-password')
+  @HttpCode(200)
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+    await this.authService.forgetPassword(forgetPasswordDto);
 
-  // @Post('reset-password')
-  // async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-  //   await this.authService.resetPassword(resetPasswordDto);
-  // }
+    return {
+      message:
+        'سيقوم المشرف بإرسال رابط تغيير كلمة السر إلى رقمك علر الواتساب، يُرجى انتظاره فهذه العملية تأخذ بعض الوقت',
+    };
+  }
+
+  @Post('reset-password')
+  @HttpCode(200)
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    await this.authService.resetPassword(resetPasswordDto);
+
+    return {
+      message: 'تم تغيير كلمة السر بنجاح',
+    };
+  }
 }
