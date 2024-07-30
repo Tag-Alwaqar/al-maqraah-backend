@@ -7,7 +7,10 @@ export class Student extends SoftDeletableEntity {
   @Column()
   user_id: number;
 
-  @OneToOne(() => User, (user) => user.student)
+  @OneToOne(() => User, (user) => user.student, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

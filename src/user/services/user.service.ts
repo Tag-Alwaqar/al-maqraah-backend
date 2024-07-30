@@ -82,8 +82,8 @@ export class UsersService {
     });
   }
 
-  async update(id: number, data: Partial<User>) {
-    return await this.usersRepository.update(id, data);
+  async update(user: User) {
+    return await this.usersRepository.save(user);
   }
 
   async updateUser(id: number, data: UpdateUserDto) {}

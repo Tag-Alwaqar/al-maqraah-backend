@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '@user/authentication/auth.service';
+import { User } from '@user/authentication/decorators/user.decorator';
+import { ChangePasswordDto } from '@user/authentication/dtos/change-password.dto';
 import {
   SignupDto,
   LoginSignupResponseDto,
@@ -51,25 +53,26 @@ export class AuthController {
 
   @Get('user')
   @UseGuards(JwtAuthGuard)
-  async getUser(@Request() req: any) {
-    const user = await this.usersService.findOneById(req.user.id);
-    return { user: new UserInfo(user) };
+  async getUser(@User() userInfo: UserInfo) {
+    const user = await this.usersService.findOneById(userInfo.id);
+    return { user: new UserDto(user) };
   }
 
-  // @Post('change-password')
-  // @UseGuards(AuthenticatedGuard)
-  // changePassword(
-  //   @Admin() adminInfo: AdminInfo,
-  //   @Body() changePasswordDto: ChangePasswordDtoV2,
-  // ) {
-  //   return this.authService.changePassword(adminInfo, {
-  //     oldPassword: changePasswordDto.old_password,
-  //     newPassword: changePasswordDto.new_password,
-  //   });
-  // }
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @User() userInfo: UserInfo,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
+    await this.authService.changePassword(userInfo, changePasswordDto);
+
+    return {
+      message: 'تم تغيير كلمة السر بنجاح',
+    };
+  }
 
   // @Post('forget-password')
-  // async forgetPassword(@Body() forgetPasswordDto: ForgetAdminPasswordDto) {
+  // async forgetPassword(@Body() forgetPasswordDto: ForgetUserPasswordDto) {
   //   await this.authService.forgetPassword(forgetPasswordDto);
   // }
 

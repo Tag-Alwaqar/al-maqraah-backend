@@ -31,11 +31,13 @@ export class AuthService {
     switch (signupDto.user_type) {
       case 'student':
         const student = await this.studentsService.signup(user.id, signupDto);
-        await this.usersService.update(user.id, { student });
+        user.student = student;
+        await this.usersService.update(user);
         break;
       case 'teacher':
         const teacher = await this.teachersService.signup(user.id);
-        await this.usersService.update(user.id, { teacher });
+        user.teacher = teacher;
+        await this.usersService.update(user);
         break;
     }
 
@@ -73,9 +75,9 @@ export class AuthService {
       throw new BadRequestException('كلمة السر القديمة غير صحيحة');
     }
 
-    return await this.usersService.update(user.id, {
-      password: changePasswordDto.new_password,
-    });
+    user.password = changePasswordDto.new_password;
+
+    return await this.usersService.update(user);
   }
 
   async forgetPassword(forgetPasswordDto: ForgetPasswordDto) {
@@ -86,9 +88,9 @@ export class AuthService {
 
     const token = this.jwtService.sign({ id: user.id }, { expiresIn: '1d' });
 
-    await this.usersService.update(user.id, {
-      forget_pass_token: token,
-    });
+    user.forget_pass_token = token;
+
+    await this.usersService.update(user);
 
     return {
       message:
@@ -121,10 +123,10 @@ export class AuthService {
       );
     }
 
-    return await this.usersService.update(token.id, {
-      password: resetPasswordDto.new_password,
-      forget_pass_token: null,
-    });
+    user.password = resetPasswordDto.new_password;
+    user.forget_pass_token = null;
+
+    return await this.usersService.update(user);
   }
 
   async generateToken(user: User) {
