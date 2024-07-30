@@ -18,6 +18,8 @@ import { TeachersService } from './services/teacher.service';
 import { Student } from './entities/student.entity';
 import { Teacher } from './entities/teacher.entity';
 import { AdminsService } from './services/admin.service';
+import { UserController } from './controllers/user.controller';
+import { AdminController } from './controllers/admin.controller';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { AdminsService } from './services/admin.service';
     TypeOrmModule.forFeature([User, Admin, Student, Teacher]),
     CommonModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, UserController, AdminController],
   providers: [
     AuthService,
     UsersService,

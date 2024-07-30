@@ -1,4 +1,3 @@
-import { mapEntityToDto } from '@common/mappers';
 import {
   Request,
   Post,
@@ -24,7 +23,7 @@ import { LocalAuthGuard } from '@user/authentication/guards/local-auth.guard';
 import { UserDto } from '@user/dto/user.dto';
 import { UsersService } from '@user/services/user.service';
 
-@ApiTags('user.auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -33,13 +32,12 @@ export class AuthController {
   ) {}
   @Post('signup')
   async signup(@Body() signupDto: SignupDto) {
-    const user = await this.authService.signup(signupDto);
+    await this.authService.signup(signupDto);
 
-    const token = await this.authService.generateToken(user);
-
-    const mappedUser = new UserDto(user);
-
-    return new LoginSignupResponseDto(mappedUser, token);
+    return {
+      message:
+        'تم إنشاء الحساب بنجاح، يُرجى انتظار تفعيل حسابك فهذه العملية تأخذ بعض الوقت',
+    };
   }
 
   @Post('login')
@@ -55,9 +53,9 @@ export class AuthController {
     return new LoginSignupResponseDto(mappedUser, token);
   }
 
-  @Get('user')
+  @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getUser(@User() userInfo: UserInfo) {
+  async getMe(@User() userInfo: UserInfo) {
     const user = await this.usersService.findOneById(userInfo.id);
     return { user: new UserDto(user) };
   }

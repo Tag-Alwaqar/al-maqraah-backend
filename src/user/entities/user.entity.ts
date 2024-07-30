@@ -72,7 +72,7 @@ export class User extends SoftDeletableEntity {
   @BeforeUpdate()
   async setPassword() {
     if (
-      !this.previous_password ||
+      (!this.previous_password && this.password) ||
       (this.previous_password !== this.password && this.password)
     ) {
       const salt = await bcrypt.genSalt();

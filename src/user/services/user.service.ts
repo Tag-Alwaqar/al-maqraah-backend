@@ -1,11 +1,14 @@
+import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { PaginationService } from '@common/pagination.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
+import { UserDto } from '@user/dto/user.dto';
 import { User } from '@user/entities/user.entity';
 import { generateRandomCode } from '@user/utils/utils';
 import { Repository } from 'typeorm';
+import { UsersQueryDto } from '../dto/users-query.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,9 +34,37 @@ export class UsersService {
       phone: data.phone,
       gender: data.gender,
       born_at: data.born_at,
-      approved: true, // TODO: change to false when approve feature is implemented
+      approved: false,
     });
     return await this.usersRepository.save(user);
+  }
+
+  async findAll(pageOptionsDto: PageOptionsDto, usersQuery: UsersQueryDto) {
+    const query = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.admin', 'admin')
+      .leftJoinAndSelect('user.teacher', 'teacher')
+      .leftJoinAndSelect('user.student', 'student');
+
+    if (usersQuery.pending === true) {
+      query.andWhere('user.approved = false');
+    } else if (usersQuery.pending === false) {
+      query.andWhere('user.approved = true');
+    }
+
+    if (usersQuery.admin === true) {
+      query.andWhere('user.admin IS NOT NULL');
+    } else if (usersQuery.teacher === true) {
+      query.andWhere('user.teacher IS NOT NULL');
+    } else if (usersQuery.student === true) {
+      query.andWhere('user.student IS NOT NULL');
+    }
+
+    return this.paginationService.paginate({
+      pageOptionsDto,
+      query,
+      mapToDto: async (users: User[]) => users.map((user) => new UserDto(user)),
+    });
   }
 
   async findOneById(id: number): Promise<User | null> {
@@ -94,7 +125,19 @@ export class UsersService {
 
   async updateUser(id: number, data: UpdateUserDto) {}
 
-  async approveUser(id: number) {}
+  async approveUser(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    user.approved = true;
+
+    await this.update(user);
+  }
 
   async delete(id: number) {}
 }
