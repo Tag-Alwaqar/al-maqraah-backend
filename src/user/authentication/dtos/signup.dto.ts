@@ -1,18 +1,15 @@
-import { mapEntityToDto } from '@common/mappers';
 import { UserDto } from '@user/dto/user.dto';
-import { User } from '@user/entities/user.entity';
 import { Gender } from '@user/enums/gender.enum';
 import { UserType } from '@user/enums/user-type.enum';
 import { Transform } from 'class-transformer';
 import {
-  IsDateString,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Max,
   Min,
+  IsInt,
 } from 'class-validator';
 
 export class SignupDto {
@@ -41,13 +38,13 @@ export class SignupDto {
   user_type: UserType;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(1)
   @Max(114)
   current_surah?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   current_ayah?: number;
 }
 

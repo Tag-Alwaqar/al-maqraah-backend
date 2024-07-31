@@ -4,11 +4,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
-import { GetUserResponseDto, UserDto } from '@user/dto/user.dto';
+import { GetUserResponseDto } from '@user/dto/user.dto';
 import { User } from '@user/entities/user.entity';
 import { generateRandomCode } from '@user/utils/utils';
 import { Repository } from 'typeorm';
 import { UsersQueryDto } from '../dto/users-query.dto';
+import { isDefined } from 'class-validator';
 
 @Injectable()
 export class UsersService {
@@ -143,7 +144,21 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async updateUser(id: number, data: UpdateUserDto) {}
+  async updateUser(id: number, data: UpdateUserDto) {
+    const user = await this.findOneById(id);
+
+    if (!user) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    Object.keys(data).forEach((key) => {
+      if (isDefined(data[key])) {
+        user[key] = data[key];
+      }
+    });
+
+    return await this.update(user);
+  }
 
   async approveUser(id: number) {
     const user = await this.usersRepository.findOne({
@@ -159,5 +174,15 @@ export class UsersService {
     await this.update(user);
   }
 
-  async delete(id: number) {}
+  async delete(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    await this.usersRepository.delete(id);
+  }
 }
