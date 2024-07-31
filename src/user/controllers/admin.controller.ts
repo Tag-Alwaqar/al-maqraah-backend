@@ -30,5 +30,4 @@ export class AdminController {
 
     return { message: 'تم تفعيل الحساب بنجاح' };
   }
-  // test
 }
