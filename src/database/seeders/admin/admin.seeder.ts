@@ -29,6 +29,7 @@ export class AdminSeeder implements SeederInterface {
 
         const insertedAdmin = await this.adminRepository.save(
           this.adminRepository.create({
+            is_super: true,
             user: insertedUser,
           }),
         );

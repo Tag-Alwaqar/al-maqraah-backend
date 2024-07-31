@@ -14,6 +14,9 @@ export class Admin extends SoftDeletableEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column({ type: 'bool', default: false })
+  is_super: boolean;
+
   // @Column()
   // user_id: number;
   //   @OneToMany(() => Group, {

@@ -70,3 +70,11 @@ export class UserDto {
     }
   }
 }
+
+export class GetUserResponseDto extends UserDto {
+  forget_pass_token?: string;
+  constructor(user: User) {
+    super(user);
+    this.forget_pass_token = user.forget_pass_token;
+  }
+}

@@ -4,7 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
-import { UserDto } from '@user/dto/user.dto';
+import { GetUserResponseDto, UserDto } from '@user/dto/user.dto';
 import { User } from '@user/entities/user.entity';
 import { generateRandomCode } from '@user/utils/utils';
 import { Repository } from 'typeorm';
@@ -39,20 +39,27 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async findAll(pageOptionsDto: PageOptionsDto, usersQuery: UsersQueryDto) {
+  async findAllByAdmin(
+    pageOptionsDto: PageOptionsDto,
+    usersQuery: UsersQueryDto,
+    callingAdminId: number,
+  ) {
     const query = this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.admin', 'admin')
       .leftJoinAndSelect('user.teacher', 'teacher')
       .leftJoinAndSelect('user.student', 'student');
 
-    if (usersQuery.pending === true) {
-      query.andWhere('user.approved = false');
-    } else if (usersQuery.pending === false) {
-      query.andWhere('user.approved = true');
+    const admin = await this.usersRepository.findOne({
+      where: { id: callingAdminId },
+      relations: ['admin'],
+    });
+
+    if (!admin.admin.is_super) {
+      query.andWhere('user.admin IS NULL');
     }
 
-    if (usersQuery.admin === true) {
+    if (usersQuery.admin === true && admin.admin.is_super) {
       query.andWhere('user.admin IS NOT NULL');
     } else if (usersQuery.teacher === true) {
       query.andWhere('user.teacher IS NOT NULL');
@@ -60,10 +67,23 @@ export class UsersService {
       query.andWhere('user.student IS NOT NULL');
     }
 
+    if (usersQuery.pending === true) {
+      query.andWhere('user.approved = false');
+    } else if (usersQuery.pending === false) {
+      query.andWhere('user.approved = true');
+    }
+
+    if (usersQuery.forgot_pass === true) {
+      query.andWhere('user.forget_pass_token IS NOT NULL');
+    } else if (usersQuery.forgot_pass === false) {
+      query.andWhere('user.forget_pass_token IS NULL');
+    }
+
     return this.paginationService.paginate({
       pageOptionsDto,
       query,
-      mapToDto: async (users: User[]) => users.map((user) => new UserDto(user)),
+      mapToDto: async (users: User[]) =>
+        users.map((user) => new GetUserResponseDto(user)),
     });
   }
 

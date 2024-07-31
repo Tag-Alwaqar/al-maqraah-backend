@@ -21,4 +21,9 @@ export class UsersQueryDto {
   @IsNotEmpty()
   @Transform(({ value }) => value === 'true')
   student?: boolean;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @Transform(({ value }) => value === 'true')
+  forgot_pass?: boolean;
 }
