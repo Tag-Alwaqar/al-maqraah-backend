@@ -3,7 +3,6 @@ import { Student } from '@user/entities/student.entity';
 import { Teacher } from '@user/entities/teacher.entity';
 import { User } from '@user/entities/user.entity';
 import { Gender } from '@user/enums/gender.enum';
-import { Expose } from 'class-transformer';
 
 export class AdminDto {
   id: number;
@@ -45,6 +44,7 @@ export class UserDto {
   created_at: Date;
   updated_at: Date;
   born_at: Date;
+  age: number;
   phone: string;
   gender: Gender;
   approved: boolean;
@@ -58,6 +58,7 @@ export class UserDto {
     this.created_at = user.created_at;
     this.updated_at = user.updated_at;
     this.born_at = user.born_at;
+    this.age = user.age;
     this.phone = user.phone;
     this.gender = user.gender;
     this.approved = user.approved;

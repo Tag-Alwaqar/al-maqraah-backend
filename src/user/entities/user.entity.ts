@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { Admin } from './admin.entity';
 import { Teacher } from './teacher.entity';
 import { Student } from './student.entity';
+import * as moment from 'moment';
 
 @Entity({ name: 'users' })
 export class User extends SoftDeletableEntity {
@@ -67,6 +68,10 @@ export class User extends SoftDeletableEntity {
   @OneToOne(() => Student, (student) => student.user, { nullable: true })
   @JoinColumn({ name: 'student_id' })
   student?: Student;
+
+  get age(): number {
+    return moment().diff(this.born_at, 'years');
+  }
 
   @BeforeInsert()
   @BeforeUpdate()
