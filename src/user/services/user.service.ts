@@ -80,6 +80,8 @@ export class UsersService {
       query.andWhere('user.forget_pass_token IS NULL');
     }
 
+    query.orderBy('user.name', 'ASC');
+
     return this.paginationService.paginate({
       pageOptionsDto,
       query,
