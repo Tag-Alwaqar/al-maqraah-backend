@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { User } from './user.entity';
 import { SoftDeletableEntity } from '@common/entities/soft-deletable.entity';
+import { Group } from '@group/entities/group.entity';
 
 @Entity({ name: 'admins' })
 export class Admin extends SoftDeletableEntity {
@@ -17,14 +18,12 @@ export class Admin extends SoftDeletableEntity {
   @Column({ type: 'bool', default: false })
   is_super: boolean;
 
-  // @Column()
-  // user_id: number;
-  //   @OneToMany(() => Group, {
-  //     onDelete: 'SET NULL',
-  //     nullable: true,
-  //   })
-  //   @JoinTable()
-  //   groups?: Group[];
+  @OneToMany(() => Group, (group) => group.admin, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  groups?: Group[];
+
   //   @OneToMany(() => Fees, {
   //     onDelete: 'SET NULL',
   //     nullable: true,

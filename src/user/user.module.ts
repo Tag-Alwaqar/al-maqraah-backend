@@ -20,6 +20,7 @@ import { Teacher } from './entities/teacher.entity';
 import { AdminsService } from './services/admin.service';
 import { UserController } from './controllers/user.controller';
 import { AdminController } from './controllers/admin.controller';
+import { Group } from '@group/entities/group.entity';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { AdminController } from './controllers/admin.controller';
       inject: [ConfigService],
     }),
     PassportModule.register({ session: true }),
-    TypeOrmModule.forFeature([User, Admin, Student, Teacher]),
+    TypeOrmModule.forFeature([User, Admin, Student, Teacher, Group]),
     CommonModule,
   ],
   controllers: [AuthController, UserController, AdminController],

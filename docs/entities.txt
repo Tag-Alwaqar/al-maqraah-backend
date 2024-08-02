@@ -12,6 +12,7 @@ User extends BaseEntity:
     student?: Student
 
 Admin:
+    is_super: boolean
     user: User
     groups: Group[]
     fees: Fees[]

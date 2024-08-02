@@ -14,7 +14,6 @@ import { User } from '@user/authentication/decorators/user.decorator';
 import { UpdateStudentDto } from '@user/dto/update-student.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { UsersQueryDto } from '@user/dto/users-query.dto';
-import { AdminsService } from '@user/services/admin.service';
 import { StudentsService } from '@user/services/student.service';
 import { UsersService } from '@user/services/user.service';
 
@@ -33,7 +32,7 @@ export class AdminController {
     @Query() usersQueryDto: UsersQueryDto,
     @User('id') callingAdminId: number,
   ) {
-    return this.usersService.findAllByAdmin(
+    return await this.usersService.findAll(
       pageOptionsDto,
       usersQueryDto,
       callingAdminId,
@@ -53,7 +52,7 @@ export class AdminController {
   async updateUser(@Param('id') id: string, @Body() data: UpdateUserDto) {
     await this.usersService.updateUser(+id, data);
 
-    return { message: 'تم تحديث البيانات  بنجاح' };
+    return { message: 'تم تحديث البيانات بنجاح' };
   }
 
   @Delete('users/:id')
@@ -69,6 +68,6 @@ export class AdminController {
   async updateStudent(@Param('id') id: string, @Body() data: UpdateStudentDto) {
     await this.studentsService.updateStudent(+id, data);
 
-    return { message: 'تم تحديث البيانات  بنجاح' };
+    return { message: 'تم تحديث البيانات بنجاح' };
   }
 }

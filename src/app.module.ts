@@ -9,6 +9,7 @@ import { CommonModule } from '@common/common.module';
 import { HttpExceptionFilter } from '@common/filters/exception.filter';
 import { BadRequestExceptionFilter } from '@common/filters/bad-request.filter';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
+import { GroupModule } from '@group/group.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
       global: true,
       middleware: { mount: true },
     }),
+    GroupModule,
   ],
   controllers: [],
   providers: [

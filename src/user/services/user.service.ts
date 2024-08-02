@@ -40,7 +40,7 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async findAllByAdmin(
+  async findAll(
     pageOptionsDto: PageOptionsDto,
     usersQuery: UsersQueryDto,
     callingAdminId: number,

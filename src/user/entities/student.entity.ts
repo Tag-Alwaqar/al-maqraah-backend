@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
 import { User } from './user.entity';
 import { SoftDeletableEntity } from '@common/entities/soft-deletable.entity';
+import { Group } from '@group/entities/group.entity';
 
 @Entity({ name: 'students' })
 export class Student extends SoftDeletableEntity {
@@ -20,12 +21,11 @@ export class Student extends SoftDeletableEntity {
   @Column({ type: 'int', nullable: true })
   current_ayah?: number;
 
-  // @OneToMany(() => Group, {
-  //   onDelete: 'SET NULL',
-  //   nullable: true,
-  // })
-  // @JoinTable()
-  // groups?: Group[];
+  @ManyToMany(() => Group, (group) => group.students, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  groups?: Group[];
 
   // @OneToMany(() => Fees, {
   //   onDelete: 'SET NULL',

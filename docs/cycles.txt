@@ -1,7 +1,7 @@
 Auth: => DONE
     1. Teacher and Student signup: backend will generate code. => DONE
     2. Admin seeds: initially only one admin will be seeded. => DONE
-    3. All users login: code and password.
+    3. All users login: code and password. => DONE
     4. Forget password: user sends a forget pass request, then backend will insert forgetPassToken into User, 
         then admin will fetch forgottend password users, 
         then frontend will show table of these users and corresponding forget password link (appending current frontend host and the route of reset password),
@@ -16,28 +16,30 @@ Auth: => DONE
 
 Student:
     1. Could see his profile. => DONE
-    2. Could update profile.
-    3. Could see his Evaluation and ShariaEvaluation, filtering by date (2024-05-18).
+    2. Could update profile.  => DONE
+    3. Could see his QuraanEvaluation and ShariaEvaluation, filtering by date (2024-05-18).
 
 Teacher:
     1. Could see his profile. => DONE
-    2. Could update profile.
+    2. Could update profile. => DONE
     3. Could read groups basic info and group students with same gender.
     4. Could add/update QuraanEvaluation & ShariaEvaluation.
         On adding QuraanEvaluation, backend updates current_surah & current_ayah in student.
 
 Admin:
     1. Could see his profile. => DONE
-    2. Could update profile.
-    2. Could update any user.
+    2. Could update profile. => DONE
+    2. Could update any user. => DONE
     3. Could view a list of forgotten password users. => DONE
-    4. Could delete Student and Teacher.
+    4. Could delete Student and Teacher. => DONE
     5. Could read/add/update/delete groups.
     6. Could add/update/delete QuraanEvaluation & ShariaEvaluation.
     7. Could add/update/delete ExamEvaluation.
-    8. Could delete Student and Teacher.
-    9. Could add/delete student to/from a group.
-    10. Could view a list of pending signups, and could approve anyone.
-    11. Could view a list of students, and delete anyone.
-    11. Could view a list of teachers, and delete anyone.
+    8. Could add/delete student to/from a group.
+    9. Could view a list of pending signups, and could approve anyone. => DONE
+    10. Could view a list of students, and delete anyone. => DONE
+    11. Could view a list of teachers, and delete anyone. => DONE
     12. Could view a teacher stats, currently it is only summed duration of both QuraanEvaluation & ShariaEvaluation, sending (2024-05).
+
+sort by name when returning users.
+calculate age from born_at when returning.

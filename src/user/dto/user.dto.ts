@@ -8,9 +8,11 @@ import { Expose } from 'class-transformer';
 export class AdminDto {
   id: number;
   user_id: number;
+  is_super: boolean;
   constructor(admin: Admin) {
     this.id = admin.id;
     this.user_id = admin.user_id;
+    this.is_super = admin.is_super;
   }
 }
 
