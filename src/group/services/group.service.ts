@@ -2,8 +2,10 @@ import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { PaginationService } from '@common/pagination.service';
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
@@ -13,6 +15,8 @@ import { CreateGroupDto } from '@group/dto/create-group.dto';
 import { GroupsQueryDto } from '@group/dto/groups-query.dto';
 import { GroupDto } from '@group/dto/group.dto';
 import { UpdateGroupDto } from '@group/dto/update-group.dto';
+import { UsersService } from '@user/services/user.service';
+import { StudentsService } from '@user/services/student.service';
 
 @Injectable()
 export class GroupsService {
@@ -20,6 +24,9 @@ export class GroupsService {
     @InjectRepository(Group)
     private readonly groupsRepository: Repository<Group>,
     private readonly paginationService: PaginationService,
+    private readonly usersService: UsersService,
+    @Inject(forwardRef(() => StudentsService))
+    private readonly studentsService: StudentsService,
   ) {}
 
   async create(data: CreateGroupDto, adminId: number) {
@@ -37,23 +44,49 @@ export class GroupsService {
     return await this.groupsRepository.save(group);
   }
 
-  async findAll(pageOptionsDto: PageOptionsDto, groupsQuery: GroupsQueryDto) {
+  async findAll(
+    pageOptionsDto: PageOptionsDto,
+    groupsQuery: GroupsQueryDto,
+    callingUserId: number,
+  ) {
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
     const query = this.groupsRepository
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.admin', 'admin');
 
-    if (isDefined(groupsQuery.name)) {
+    if (isDefined(groupsQuery.name))
       query.andWhere('group.name LIKE :name', {
         name: `%${groupsQuery.name}%`,
       });
-    }
 
-    if (isDefined(groupsQuery.type)) {
+    if (isDefined(groupsQuery.type))
       query.andWhere('group.type = :type', { type: groupsQuery.type });
-    }
 
-    if (isDefined(groupsQuery.gender)) {
+    if (isDefined(groupsQuery.gender) && callingUser.admin)
       query.andWhere('group.gender = :gender', { gender: groupsQuery.gender });
+
+    if (callingUser.teacher)
+      query.andWhere('group.gender = :gender', { gender: callingUser.gender });
+
+    if (callingUser.student) {
+      const student = await this.studentsService.findOneById(
+        callingUser.student.id,
+      );
+
+      const studentGroupsIds = student.groups.map((group) => group.id);
+
+      if (studentGroupsIds.length === 0) {
+        throw new NotFoundException('لا يوجد لديك مجموعات');
+      }
+
+      query.andWhere('group.id IN (:...ids)', {
+        ids: studentGroupsIds,
+      });
     }
 
     return this.paginationService.paginate({
@@ -64,13 +97,37 @@ export class GroupsService {
     });
   }
 
-  async findById(id: number): Promise<Group> {
-    const group = await this.groupsRepository.findOne({
+  async findOneById(id: number): Promise<Group | null> {
+    return await this.groupsRepository.findOne({
       where: { id },
     });
+  }
+
+  async findById(id: number, callingUserId: number): Promise<Group> {
+    const group = await this.findOneById(id);
 
     if (!group) {
       throw new NotFoundException('هذه المجموعة غير موجودة');
+    }
+
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    if (callingUser.teacher && callingUser.gender !== group.gender) {
+      throw new NotFoundException('لا يمكنك الوصول إلى هذه المجموعة');
+    }
+
+    if (callingUser.student) {
+      const student = await this.studentsService.findOneById(
+        callingUser.student.id,
+      );
+
+      if (!student.groups.find((group) => group.id === id)) {
+        throw new NotFoundException('لا يمكنك الوصول إلى هذه المجموعة');
+      }
     }
 
     return group;
@@ -81,7 +138,7 @@ export class GroupsService {
   }
 
   async updateGroup(id: number, data: UpdateGroupDto) {
-    const group = await this.findById(id);
+    const group = await this.findOneById(id);
 
     if (!group) {
       throw new NotFoundException('هذه المجموعة غير موجودة');

@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { UsersService } from '@user/services/user.service';
 import { UserInfo } from '../dtos/user-info.dto';
 
@@ -9,10 +14,13 @@ export class TeacherAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const userInfo: UserInfo = context.switchToHttp().getRequest().user;
 
-    if (!userInfo) return false;
+    if (!userInfo) throw new ForbiddenException('يجب تسجيل الدخول أولاً');
 
     const user = await this.usersService.findOneById(userInfo.id);
 
-    return user.teacher !== null;
+    if (user.teacher === null)
+      throw new ForbiddenException('ليس لديك صلاحية الوصول إلى هذه المعلومات');
+
+    return true;
   }
 }

@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AdminAuth } from '@user/authentication/decorators/admin-auth.decorator';
+import { UserAuth } from '@user/authentication/decorators/user-auth.decorator';
 import { User } from '@user/authentication/decorators/user.decorator';
 
 @ApiTags('Group')
@@ -24,18 +25,23 @@ export class GroupController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get('')
-  @AdminAuth()
+  @UserAuth()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
     @Query() groupsQueryDto: GroupsQueryDto,
+    @User('id') callingUserId: number,
   ) {
-    return await this.groupsService.findAll(pageOptionsDto, groupsQueryDto);
+    return await this.groupsService.findAll(
+      pageOptionsDto,
+      groupsQueryDto,
+      callingUserId,
+    );
   }
 
   @Get(':id')
-  @AdminAuth()
-  async findById(@Param('id') id: string) {
-    const group = await this.groupsService.findById(+id);
+  @UserAuth()
+  async findById(@Param('id') id: string, @User('id') callingUserId: number) {
+    const group = await this.groupsService.findById(+id, callingUserId);
 
     return new GroupDto(group);
   }

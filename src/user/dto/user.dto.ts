@@ -30,11 +30,13 @@ export class StudentDto {
   user_id: number;
   current_surah: number;
   current_ayah?: number;
+  user?: UserDto;
   constructor(student: Student) {
     this.id = student.id;
-    this.user_id = student.user_id;
     this.current_surah = student.current_surah;
-    this.current_ayah = student.current_ayah;
+    if (student.current_ayah) this.current_ayah = student.current_ayah;
+    if (student.user) this.user = new UserDto(student.user);
+    else this.user_id = student.user_id;
   }
 }
 

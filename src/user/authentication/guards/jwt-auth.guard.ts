@@ -1,4 +1,8 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from '../dtos/user-info.dto';
 import { UsersService } from '@user/services/user.service';
@@ -14,11 +18,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const userInfo: UserInfo = context.switchToHttp().getRequest().user;
 
-    if (!userInfo) return false;
+    if (!userInfo) throw new UnauthorizedException('يجب تسجيل الدخول أولاً');
 
     const user = await this.usersService.findOneById(userInfo.id);
 
-    if (!user || !user.approved) return false;
+    if (!user || !user.approved)
+      throw new UnauthorizedException('يجب تسجيل الدخول أولاً');
 
     return result;
   }

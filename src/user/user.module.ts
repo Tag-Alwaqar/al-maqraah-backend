@@ -22,6 +22,7 @@ import { UserController } from './controllers/user.controller';
 import { AdminController } from './controllers/admin.controller';
 import { Group } from '@group/entities/group.entity';
 import { GroupModule } from '@group/group.module';
+import { StudentController } from './controllers/student.controller';
 
 @Module({
   imports: [
@@ -38,7 +39,12 @@ import { GroupModule } from '@group/group.module';
     CommonModule,
     forwardRef(() => GroupModule),
   ],
-  controllers: [AuthController, UserController, AdminController],
+  controllers: [
+    AuthController,
+    UserController,
+    AdminController,
+    StudentController,
+  ],
   providers: [
     AuthService,
     UsersService,

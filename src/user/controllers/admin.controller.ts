@@ -44,7 +44,7 @@ export class AdminController {
   async removeStudentFromGroup(@Body() data: RemoveStudentFromGroupDto) {
     await this.adminsService.removeStudentFromGroup(data);
 
-    return { message: 'تم مسح الطالب من المجموعة' };
+    return { message: 'تم حذف الطالب من المجموعة' };
   }
 
   @Get('users')
@@ -83,8 +83,11 @@ export class AdminController {
 
   @Delete('users/:id')
   @AdminAuth()
-  async deleteUser(@Param('id') id: string) {
-    await this.usersService.delete(+id);
+  async deleteUser(
+    @User('id') callingAdminId: string,
+    @Param('id') id: string,
+  ) {
+    await this.usersService.delete(+id, +callingAdminId);
 
     return { message: 'تم حذف الحساب بنجاح' };
   }

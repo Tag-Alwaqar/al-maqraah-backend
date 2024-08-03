@@ -67,10 +67,10 @@ export class UsersService {
     }
 
     if (isDefined(usersQuery.type)) {
-      if (usersQuery.type === UserType.Admin && admin.admin.is_super)
-        query.andWhere('user.admin IS NOT NULL');
-      else if (usersQuery.type !== UserType.Admin)
-        query.andWhere(`user.${usersQuery.type} IS NOT NULL`);
+      if (usersQuery.type === UserType.Admin) {
+        if (admin.admin.is_super) query.andWhere('user.admin IS NOT NULL');
+        else throw new ForbiddenException('غير مصرح لك بالوصول إلى المشرفين');
+      } else query.andWhere(`user.${usersQuery.type} IS NOT NULL`);
     }
 
     if (usersQuery.pending === true) {
@@ -209,6 +209,9 @@ export class UsersService {
     }
 
     if (user.admin) {
+      if (!callingAdminId) {
+        throw new ForbiddenException('لا يمكن تعديل بيانات المشرف');
+      }
       const callingAdmin = await this.findOneById(callingAdminId);
       if (!callingAdmin || !callingAdmin.admin.is_super)
         throw new ForbiddenException('لا يمكن تعديل بيانات المشرف');
@@ -237,10 +240,16 @@ export class UsersService {
     await this.update(user);
   }
 
-  async delete(id: number) {
+  async delete(id: number, callingAdminId: number) {
     const user = await this.usersRepository.findOne({
       where: { id },
     });
+
+    if (user.admin) {
+      const callingAdmin = await this.findOneById(callingAdminId);
+      if (!callingAdmin || !callingAdmin.admin.is_super)
+        throw new ForbiddenException('لا يمكن حذف المشرف');
+    }
 
     if (!user) {
       throw new NotFoundException('هذا المستخدم غير موجود');

@@ -6,14 +6,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from '@user/entities/admin.entity';
 import { Repository } from 'typeorm';
-import { UsersService } from './user.service';
 import { StudentsService } from './student.service';
 import { GroupsService } from '@group/services/group.service';
 import {
   AssignStudentToGroupDto,
   RemoveStudentFromGroupDto,
 } from '@user/dto/assign-student-to-group.dto';
-import { GroupType } from '@group/enums/group-type.enum';
 
 @Injectable()
 export class AdminsService {
@@ -32,12 +30,12 @@ export class AdminsService {
   }
 
   async assignStudentToGroup(data: AssignStudentToGroupDto) {
-    const student = await this.studentsService.findById(data.student_id);
+    const student = await this.studentsService.findOneById(data.student_id);
     if (!student) {
       throw new NotFoundException('الطالب غير موجود');
     }
 
-    const group = await this.groupsService.findById(data.group_id);
+    const group = await this.groupsService.findOneById(data.group_id);
     if (!group) {
       throw new NotFoundException('المجموعة غير موجودة');
     }
@@ -80,12 +78,12 @@ export class AdminsService {
   }
 
   async removeStudentFromGroup(data: RemoveStudentFromGroupDto) {
-    const student = await this.studentsService.findById(data.student_id);
+    const student = await this.studentsService.findOneById(data.student_id);
     if (!student) {
       throw new NotFoundException('الطالب غير موجود');
     }
 
-    const group = await this.groupsService.findById(data.group_id);
+    const group = await this.groupsService.findOneById(data.group_id);
     if (!group) {
       throw new NotFoundException('المجموعة غير موجودة');
     }
