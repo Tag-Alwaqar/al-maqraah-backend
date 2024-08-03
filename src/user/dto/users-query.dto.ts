@@ -1,5 +1,6 @@
+import { UserType } from '@user/enums/user-type.enum';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UsersQueryDto {
   @IsOptional()
@@ -9,18 +10,8 @@ export class UsersQueryDto {
 
   @IsOptional()
   @IsNotEmpty()
-  @Transform(({ value }) => value === 'true')
-  admin?: boolean;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @Transform(({ value }) => value === 'true')
-  teacher?: boolean;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @Transform(({ value }) => value === 'true')
-  student?: boolean;
+  @IsEnum(UserType)
+  type?: UserType;
 
   @IsOptional()
   @IsNotEmpty()

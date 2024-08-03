@@ -22,10 +22,10 @@ export class StudentsService {
     return await this.studentsRepository.save(student);
   }
 
-  async findOneById(id: number): Promise<Student | null> {
+  async findById(id: number): Promise<Student | null> {
     return await this.studentsRepository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ['user', 'groups'],
     });
   }
 
@@ -34,7 +34,7 @@ export class StudentsService {
   }
 
   async updateStudent(id: number, data: UpdateStudentDto) {
-    const student = await this.findOneById(id);
+    const student = await this.findById(id);
 
     if (!student) {
       throw new NotFoundException('هذا المستخدم غير موجود');

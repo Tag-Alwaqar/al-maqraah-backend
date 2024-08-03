@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SessionSerializer } from './authentication/admin-session.serializer';
 import { LocalStrategy } from './authentication/strategies/local.strategy';
@@ -21,6 +21,7 @@ import { AdminsService } from './services/admin.service';
 import { UserController } from './controllers/user.controller';
 import { AdminController } from './controllers/admin.controller';
 import { Group } from '@group/entities/group.entity';
+import { GroupModule } from '@group/group.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { Group } from '@group/entities/group.entity';
     PassportModule.register({ session: true }),
     TypeOrmModule.forFeature([User, Admin, Student, Teacher, Group]),
     CommonModule,
+    forwardRef(() => GroupModule),
   ],
   controllers: [AuthController, UserController, AdminController],
   providers: [

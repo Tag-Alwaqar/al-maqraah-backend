@@ -3,6 +3,7 @@ import { Student } from '@user/entities/student.entity';
 import { Teacher } from '@user/entities/teacher.entity';
 import { User } from '@user/entities/user.entity';
 import { Gender } from '@user/enums/gender.enum';
+import { UserType } from '@user/enums/user-type.enum';
 
 export class AdminDto {
   id: number;
@@ -48,6 +49,7 @@ export class UserDto {
   phone: string;
   gender: Gender;
   approved: boolean;
+  type: UserType;
   admin?: AdminDto;
   teacher?: TeacherDto;
   student?: StudentDto;
@@ -64,12 +66,15 @@ export class UserDto {
     this.approved = user.approved;
     if (user.admin) {
       this.admin = new AdminDto(user.admin);
+      this.type = UserType.Admin;
     }
     if (user.teacher) {
       this.teacher = new TeacherDto(user.teacher);
+      this.type = UserType.Teacher;
     }
     if (user.student) {
       this.student = new StudentDto(user.student);
+      this.type = UserType.Student;
     }
   }
 }
