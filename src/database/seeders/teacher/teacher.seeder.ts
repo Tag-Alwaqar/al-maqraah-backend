@@ -3,49 +3,49 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SeederInterface } from '@seeders/seeder.interface';
 import { User } from '@user/entities/user.entity';
-import { Admin } from '@user/entities/admin.entity';
-import { adminUsers, admins } from './admin.data';
+import { Teacher } from '@user/entities/teacher.entity';
+import { teacherUsers, teachers } from './teacher.data';
 
 @Injectable()
-export class AdminSeeder implements SeederInterface {
+export class TeacherSeeder implements SeederInterface {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Admin)
-    private readonly adminRepository: Repository<Admin>,
+    @InjectRepository(Teacher)
+    private readonly teacherRepository: Repository<Teacher>,
   ) {}
 
   async seed() {
     try {
-      for (let i = 0; i < adminUsers.length; i++) {
+      for (let i = 0; i < teacherUsers.length; i++) {
         const existingUser = await this.userRepository.findOne({
-          where: { code: adminUsers[i].code },
+          where: { code: teacherUsers[i].code },
         });
 
         if (existingUser) {
           console.log(
-            `Skipping, user with code ${adminUsers[i].code} already exists.`,
+            `Skipping, user with code ${teacherUsers[i].code} already exists.`,
           );
           continue;
         }
 
         const insertedUser = await this.userRepository.save(
-          this.userRepository.create(adminUsers[i]),
+          this.userRepository.create(teacherUsers[i]),
         );
 
-        const insertedAdmin = await this.adminRepository.save(
-          this.adminRepository.create({
-            ...admins[i],
+        const insertedTeacher = await this.teacherRepository.save(
+          this.teacherRepository.create({
+            ...teachers[i],
             user: insertedUser,
           }),
         );
 
-        insertedUser.admin = insertedAdmin;
+        insertedUser.teacher = insertedTeacher;
 
         await this.userRepository.save(insertedUser);
       }
     } catch (error) {
-      console.log('Error seeding admin users: ', error);
+      console.log('Error seeding teacher users: ', error);
     }
   }
 }

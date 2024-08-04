@@ -129,7 +129,7 @@ export class AuthService {
       {
         ...user,
       },
-      { expiresIn: '10d' },
+      { expiresIn: '30d' },
     );
     return token;
   }

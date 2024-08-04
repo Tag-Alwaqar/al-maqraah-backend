@@ -47,4 +47,4 @@ web.json
 downloads/*
 uploads/*
 
-*.data.ts
+admin.data.ts
