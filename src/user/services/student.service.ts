@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { UsersService } from './user.service';
 import { PaginationService } from '@common/pagination.service';
 import { ReverseStudentDto } from '@user/dto/user.dto';
+import { StudentsQueryDto } from '@user/dto/students-query.dto';
 
 @Injectable()
 export class StudentsService {
@@ -66,6 +67,43 @@ export class StudentsService {
       .leftJoinAndSelect('student.user', 'user')
       .leftJoinAndSelect('student.groups', 'group')
       .where('group.id = :groupId', { groupId });
+
+    query.orderBy('user.name', 'ASC');
+
+    return this.paginationService.paginate({
+      pageOptionsDto,
+      query,
+      mapToDto: async (student: Student[]) =>
+        student.map((student) => new ReverseStudentDto(student)),
+    });
+  }
+
+  async getNotAssignedStudents(
+    pageOptionsDto: PageOptionsDto,
+    studentsQueryDto: StudentsQueryDto,
+  ) {
+    const subQuery = this.studentsRepository
+      .createQueryBuilder('student')
+      .select('student.id')
+      .leftJoin('student.groups', 'group')
+      .where('group.type = :type', { type: studentsQueryDto.groupType });
+
+    const query = this.studentsRepository
+      .createQueryBuilder('student')
+      .leftJoinAndSelect('student.user', 'user')
+      .leftJoinAndSelect('student.groups', 'group')
+      .where(`student.id NOT IN (${subQuery.getQuery()})`)
+      .setParameters(subQuery.getParameters());
+
+    if (studentsQueryDto.gender)
+      query.andWhere('user.gender = :gender', {
+        gender: studentsQueryDto.gender,
+      });
+
+    if (studentsQueryDto.search)
+      query.andWhere('user.name LIKE :search', {
+        search: `%${studentsQueryDto.search}%`,
+      });
 
     query.orderBy('user.name', 'ASC');
 
