@@ -1,11 +1,6 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { GroupsService } from '@group/services/group.service';
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UpdateStudentDto } from '@user/dto/update-student.dto';
@@ -14,7 +9,7 @@ import { isDefined } from 'class-validator';
 import { Repository } from 'typeorm';
 import { UsersService } from './user.service';
 import { PaginationService } from '@common/pagination.service';
-import { StudentDto } from '@user/dto/user.dto';
+import { ReverseStudentDto } from '@user/dto/user.dto';
 
 @Injectable()
 export class StudentsService {
@@ -78,7 +73,7 @@ export class StudentsService {
       pageOptionsDto,
       query,
       mapToDto: async (student: Student[]) =>
-        student.map((student) => new StudentDto(student)),
+        student.map((student) => new ReverseStudentDto(student)),
     });
   }
 
