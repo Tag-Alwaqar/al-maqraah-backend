@@ -4,18 +4,6 @@ import { Group } from '@group/entities/group.entity';
 import { Student } from '@user/entities/student.entity';
 import { Teacher } from '@user/entities/teacher.entity';
 
-export interface Revision {
-  start_surah: number;
-  end_surah: number;
-  grade?: number; // 0 to 5
-}
-
-export class NewSurah {
-  start_ayah: number;
-  end_ayah: number;
-  grade?: number; // 0 to 5
-}
-
 export abstract class Evaluation extends SoftDeletableEntity {
   @Column({ type: 'int' })
   group_id: number;

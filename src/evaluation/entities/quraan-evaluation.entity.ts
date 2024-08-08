@@ -1,5 +1,7 @@
 import { Column, Entity } from 'typeorm';
-import { Evaluation, NewSurah, Revision } from './evaluation.entity';
+import { Evaluation } from './evaluation.entity';
+import { Revision } from '@evaluation/interfaces/revision.interface';
+import { NewSurah } from '@evaluation/interfaces/new-surah.interface';
 
 @Entity({ name: 'quraan_evaluation' })
 export class QuraanEvaluation extends Evaluation {
