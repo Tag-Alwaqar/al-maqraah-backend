@@ -1,20 +1,18 @@
-import { GroupType } from '@group/enums/group-type.enum';
-import { Gender } from '@user/enums/gender.enum';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class GroupsQueryDto {
+export class EvaluationsQueryDto {
   @IsOptional()
   @IsNotEmpty()
-  @IsString()
-  name?: string;
+  @IsInt()
+  group_id?: number;
 
   @IsOptional()
   @IsNotEmpty()
-  @IsEnum(GroupType)
-  type?: GroupType;
+  @IsInt()
+  student_id?: number;
 
   @IsOptional()
   @IsNotEmpty()
-  @IsEnum(Gender)
-  gender?: Gender;
+  @IsInt()
+  teacher_id?: number;
 }

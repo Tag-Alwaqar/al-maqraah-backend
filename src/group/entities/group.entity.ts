@@ -42,14 +42,4 @@ export class Group extends SoftDeletableEntity {
   })
   @JoinTable()
   students?: Student[];
-
-  // @OneToMany(() => QuraanEvaluation, (evaluation) => evaluation.group, {
-  //   nullable: true,
-  // })
-  // quraan_evaluations?: QuraanEvaluation[];
-
-  // @OneToMany(() => ShariaEvaluation, (evaluation) => evaluation.group, {
-  //   nullable: true,
-  // })
-  // sharia_evaluations?: ShariaEvaluation[];
 }

@@ -13,17 +13,4 @@ export class Teacher extends SoftDeletableEntity {
   })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  // @OneToMany(() => QuraanEvaluation, {
-  //   onDelete: 'SET NULL',
-  //   nullable: true,
-  // })
-  // @JoinTable()
-  // quraan_evaluations?: QuraanEvaluation[];
-  // @OneToMany(() => ShariaEvaluation, {
-  //   onDelete: 'SET NULL',
-  //   nullable: true,
-  // })
-  // @JoinTable()
-  // sharia_evaluations?: ShariaEvaluation[];
 }

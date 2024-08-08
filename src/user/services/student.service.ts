@@ -1,6 +1,10 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { GroupsService } from '@group/services/group.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UpdateStudentDto } from '@user/dto/update-student.dto';
@@ -49,7 +53,7 @@ export class StudentsService {
     }
 
     if (callingUser.teacher && callingUser.gender !== group.gender)
-      throw new NotFoundException('لا يمكنك الوصول إلى هذه المجموعة');
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه المجموعة');
 
     if (callingUser.student) {
       const student = await this.studentsRepository.findOne({
@@ -58,7 +62,7 @@ export class StudentsService {
       });
 
       if (!student.groups.find((group) => group.id === groupId)) {
-        throw new NotFoundException('لا يمكنك الوصول إلى هذه المجموعة');
+        throw new ForbiddenException('لا يمكنك الوصول إلى هذه المجموعة');
       }
     }
 

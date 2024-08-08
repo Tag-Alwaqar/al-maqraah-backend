@@ -57,6 +57,7 @@ Revision:
     grade?: number => 0 => 5
 
 NewSurah:
+    surah: number => 1 => 114
     start_ayah: number
     end_ayah: number
     grade?: number => 0 => 5
