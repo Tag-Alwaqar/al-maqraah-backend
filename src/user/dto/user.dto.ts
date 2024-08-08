@@ -81,6 +81,15 @@ export class UserDto {
   }
 }
 
+export class ReverseStudentDto extends UserDto {
+  constructor(student: Student) {
+    super(student.user);
+    delete student.user;
+    this.student = new StudentDto(student);
+    this.type = UserType.Student;
+  }
+}
+
 export class GetUserResponseDto extends UserDto {
   forget_pass_token?: string;
   constructor(user: User) {
