@@ -10,6 +10,7 @@ import { HttpExceptionFilter } from '@common/filters/exception.filter';
 import { BadRequestExceptionFilter } from '@common/filters/bad-request.filter';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { GroupModule } from '@group/group.module';
+import { EvaluationModule } from '@evaluation/evaluation.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { GroupModule } from '@group/group.module';
       middleware: { mount: true },
     }),
     GroupModule,
+    EvaluationModule,
   ],
   controllers: [],
   providers: [

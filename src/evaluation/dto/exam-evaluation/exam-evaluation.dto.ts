@@ -19,5 +19,6 @@ export class ExamEvaluationDto {
     this.group = new GroupDto(examEvaluation.group);
     this.student = new ReverseStudentDto(examEvaluation.student);
     this.max_grade = examEvaluation.max_grade;
+    this.grade = examEvaluation.grade;
   }
 }

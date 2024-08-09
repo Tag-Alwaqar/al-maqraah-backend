@@ -8,26 +8,26 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { isDefined } from 'class-validator';
-import { QuraanEvaluation } from '@evaluation/entities/quraan-evaluation.entity';
 import { StudentsService } from '@user/services/student.service';
 import { GroupsService } from '@group/services/group.service';
-import { CreateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/create-quraan-evaluation.dto';
 import { EvaluationsQueryDto } from '@evaluation/dto/evaluation/evaluations-query.dto';
 import { UsersService } from '@user/services/user.service';
-import { QuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/quraan-evaluation.dto';
+import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity';
+import { CreateShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/create-sharia-evaluation.dto';
+import { ShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/sharia-evaluation.dto';
 
 @Injectable()
-export class QuraanEvaluationsService {
+export class ShariaEvaluationsService {
   constructor(
-    @InjectRepository(QuraanEvaluation)
-    private readonly quraanEvaluationsRepository: Repository<QuraanEvaluation>,
+    @InjectRepository(ShariaEvaluation)
+    private readonly shariaEvaluationsRepository: Repository<ShariaEvaluation>,
     private readonly paginationService: PaginationService,
     private readonly groupsService: GroupsService,
     private readonly studentsService: StudentsService,
     private readonly usersService: UsersService,
   ) {}
 
-  async create(data: CreateQuraanEvaluationDto, teacherId: number) {
+  async create(data: CreateShariaEvaluationDto, teacherId: number) {
     const { student_id, group_id, ...rest } = data;
 
     const student = await this.studentsService.findOneById(data.student_id);
@@ -46,19 +46,13 @@ export class QuraanEvaluationsService {
       throw new NotFoundException('هذا الطالب ليس في هذه المجموعة');
     }
 
-    // update student's current surah and ayah
-    student.current_surah = data.current_new_surah.surah;
-    student.current_ayah = data.current_new_surah.end_ayah;
-
-    await this.studentsService.update(student);
-
-    const quraanEvaluation = this.quraanEvaluationsRepository.create({
+    const shariaEvaluation = this.shariaEvaluationsRepository.create({
       ...rest,
       teacher_id: teacherId,
       student,
       group,
     });
-    return await this.quraanEvaluationsRepository.save(quraanEvaluation);
+    return await this.shariaEvaluationsRepository.save(shariaEvaluation);
   }
 
   async findAll(
@@ -72,12 +66,12 @@ export class QuraanEvaluationsService {
       throw new NotFoundException('هذا المستخدم غير موجود');
     }
 
-    const query = this.quraanEvaluationsRepository
-      .createQueryBuilder('quraanEvaluation')
-      .leftJoinAndSelect('quraanEvaluation.group', 'group')
-      .leftJoinAndSelect('quraanEvaluation.student', 'student')
+    const query = this.shariaEvaluationsRepository
+      .createQueryBuilder('shariaEvaluation')
+      .leftJoinAndSelect('shariaEvaluation.group', 'group')
+      .leftJoinAndSelect('shariaEvaluation.student', 'student')
       .leftJoinAndSelect('student.user', 'studentUser')
-      .leftJoinAndSelect('quraanEvaluation.teacher', 'teacher')
+      .leftJoinAndSelect('shariaEvaluation.teacher', 'teacher')
       .leftJoinAndSelect('teacher.user', 'teacherUser');
 
     if (isDefined(evaluationsQuery.group_id))
@@ -116,29 +110,29 @@ export class QuraanEvaluationsService {
       });
     }
 
-    query.orderBy('quraanEvaluation.created_at', 'DESC');
+    query.orderBy('shariaEvaluation.created_at', 'DESC');
 
     return this.paginationService.paginate({
       pageOptionsDto,
       query,
-      mapToDto: async (quraanEvaluations: QuraanEvaluation[]) =>
-        quraanEvaluations.map(
-          (quraanEvaluation) => new QuraanEvaluationDto(quraanEvaluation),
+      mapToDto: async (shariaEvaluations: ShariaEvaluation[]) =>
+        shariaEvaluations.map(
+          (shariaEvaluation) => new ShariaEvaluationDto(shariaEvaluation),
         ),
     });
   }
 
-  async findOneById(id: number): Promise<QuraanEvaluation | null> {
-    return await this.quraanEvaluationsRepository.findOne({
+  async findOneById(id: number): Promise<ShariaEvaluation | null> {
+    return await this.shariaEvaluationsRepository.findOne({
       where: { id },
       relations: ['group', 'student', 'teacher'],
     });
   }
 
-  async findById(id: number, callingUserId: number): Promise<QuraanEvaluation> {
-    const quraanEvaluation = await this.findOneById(id);
+  async findById(id: number, callingUserId: number): Promise<ShariaEvaluation> {
+    const shariaEvaluation = await this.findOneById(id);
 
-    if (!quraanEvaluation) {
+    if (!shariaEvaluation) {
       throw new NotFoundException('هذا التقييم غير موجود');
     }
 
@@ -150,7 +144,7 @@ export class QuraanEvaluationsService {
 
     if (
       callingUser.teacher &&
-      callingUser.gender !== quraanEvaluation.group.gender
+      callingUser.gender !== shariaEvaluation.group.gender
     ) {
       throw new ForbiddenException('لا يمكنك الوصول إلى هذا التقييم');
     }
@@ -161,22 +155,22 @@ export class QuraanEvaluationsService {
       );
 
       if (
-        !student.groups.find((group) => group.id === quraanEvaluation.group.id)
+        !student.groups.find((group) => group.id === shariaEvaluation.group.id)
       ) {
         throw new ForbiddenException('لا يمكنك الوصول إلى هذا التقييم');
       }
     }
 
-    return quraanEvaluation;
+    return shariaEvaluation;
   }
 
   async delete(id: number, callingUserId: number) {
-    const quraanEvaluation = await this.quraanEvaluationsRepository.findOne({
+    const shariaEvaluation = await this.shariaEvaluationsRepository.findOne({
       where: { id },
       relations: ['teacher'],
     });
 
-    if (!quraanEvaluation) {
+    if (!shariaEvaluation) {
       throw new NotFoundException('هذا التقييم غير موجود');
     }
 
@@ -186,13 +180,13 @@ export class QuraanEvaluationsService {
       throw new NotFoundException('هذا المستخدم غير موجود');
     }
 
-    if (callingUser.teacher && callingUser.id !== quraanEvaluation.teacher.id) {
+    if (callingUser.teacher && callingUser.id !== shariaEvaluation.teacher.id) {
       throw new ForbiddenException('لا يمكنك حذف هذا التقييم');
     }
 
     if (callingUser.student)
       throw new ForbiddenException('لا يمكنك حذف هذا التقييم');
 
-    await this.quraanEvaluationsRepository.delete(id);
+    await this.shariaEvaluationsRepository.delete(id);
   }
 }
