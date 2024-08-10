@@ -15,6 +15,7 @@ import { CreateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/cre
 import { EvaluationsQueryDto } from '@evaluation/dto/evaluation/evaluations-query.dto';
 import { UsersService } from '@user/services/user.service';
 import { QuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/quraan-evaluation.dto';
+import { User } from '@user/entities/user.entity';
 
 @Injectable()
 export class QuraanEvaluationsService {
@@ -27,24 +28,22 @@ export class QuraanEvaluationsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(data: CreateQuraanEvaluationDto, teacherId: number) {
+  async create(data: CreateQuraanEvaluationDto, teacherUser: User) {
     const { student_id, group_id, ...rest } = data;
 
     const student = await this.studentsService.findOneById(data.student_id);
 
-    if (!student) {
-      throw new NotFoundException('هذا الطالب غير موجود');
-    }
+    if (!student) throw new NotFoundException('هذا الطالب غير موجود');
 
     const group = await this.groupsService.findOneById(data.group_id);
 
-    if (!group) {
-      throw new NotFoundException('هذه المجموعة غير موجودة');
-    }
+    if (!group) throw new NotFoundException('هذه المجموعة غير موجودة');
 
-    if (!student.groups.find((studentGroup) => studentGroup.id === group.id)) {
+    if (teacherUser.gender !== group.gender)
+      throw new ForbiddenException('لا يمكنك إضافة تقييم لهذه المجموعة');
+
+    if (!student.groups.find((studentGroup) => studentGroup.id === group.id))
       throw new NotFoundException('هذا الطالب ليس في هذه المجموعة');
-    }
 
     // update student's current surah and ayah
     student.current_surah = data.current_new_surah.surah;
@@ -54,7 +53,7 @@ export class QuraanEvaluationsService {
 
     const quraanEvaluation = this.quraanEvaluationsRepository.create({
       ...rest,
-      teacher_id: teacherId,
+      teacher: teacherUser.teacher,
       student,
       group,
     });
@@ -186,7 +185,10 @@ export class QuraanEvaluationsService {
       throw new NotFoundException('هذا المستخدم غير موجود');
     }
 
-    if (callingUser.teacher && callingUser.id !== quraanEvaluation.teacher.id) {
+    if (
+      callingUser.teacher &&
+      callingUser.teacher.id !== quraanEvaluation.teacher.id
+    ) {
       throw new ForbiddenException('لا يمكنك حذف هذا التقييم');
     }
 

@@ -60,7 +60,7 @@ export class QuraanEvaluationController {
     const teacher = await this.usersService.findOneById(userId);
     const quraanEvaluation = await this.quraanEvaluationsService.create(
       data,
-      teacher.teacher.id,
+      teacher,
     );
 
     return new QuraanEvaluationDto(quraanEvaluation);

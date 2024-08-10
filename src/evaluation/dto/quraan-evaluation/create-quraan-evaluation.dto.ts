@@ -1,4 +1,9 @@
-import { NewSurah, Revision } from '@evaluation/entities/evaluation.entity';
+import {
+  NewSurah,
+  NextNewSurah,
+  NextRevision,
+  Revision,
+} from '@evaluation/entities/evaluation.entity';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -17,8 +22,8 @@ export class CreateQuraanEvaluationDto extends CreateEvaluationDto {
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => Revision)
-  next_revision: Revision;
+  @Type(() => NextRevision)
+  next_revision: NextRevision;
 
   @IsNotEmpty()
   @ValidateNested()
@@ -27,8 +32,8 @@ export class CreateQuraanEvaluationDto extends CreateEvaluationDto {
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => NewSurah)
-  next_new_surah: NewSurah;
+  @Type(() => NextNewSurah)
+  next_new_surah: NextNewSurah;
 
   @IsNotEmpty()
   @IsNumber()

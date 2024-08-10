@@ -15,6 +15,7 @@ import { UsersService } from '@user/services/user.service';
 import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity';
 import { CreateShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/create-sharia-evaluation.dto';
 import { ShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/sharia-evaluation.dto';
+import { User } from '@user/entities/user.entity';
 
 @Injectable()
 export class ShariaEvaluationsService {
@@ -27,31 +28,30 @@ export class ShariaEvaluationsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(data: CreateShariaEvaluationDto, teacherId: number) {
+  async create(data: CreateShariaEvaluationDto, teacherUser: User) {
     const { student_id, group_id, ...rest } = data;
 
     const student = await this.studentsService.findOneById(data.student_id);
 
-    if (!student) {
-      throw new NotFoundException('هذا الطالب غير موجود');
-    }
+    if (!student) throw new NotFoundException('هذا الطالب غير موجود');
 
     const group = await this.groupsService.findOneById(data.group_id);
 
-    if (!group) {
-      throw new NotFoundException('هذه المجموعة غير موجودة');
-    }
+    if (!group) throw new NotFoundException('هذه المجموعة غير موجودة');
 
-    if (!student.groups.find((studentGroup) => studentGroup.id === group.id)) {
+    if (teacherUser.gender !== group.gender)
+      throw new ForbiddenException('لا يمكنك إضافة تقييم لهذه المجموعة');
+
+    if (!student.groups.find((studentGroup) => studentGroup.id === group.id))
       throw new NotFoundException('هذا الطالب ليس في هذه المجموعة');
-    }
 
     const shariaEvaluation = this.shariaEvaluationsRepository.create({
       ...rest,
-      teacher_id: teacherId,
+      teacher: teacherUser.teacher,
       student,
       group,
     });
+
     return await this.shariaEvaluationsRepository.save(shariaEvaluation);
   }
 
@@ -180,7 +180,12 @@ export class ShariaEvaluationsService {
       throw new NotFoundException('هذا المستخدم غير موجود');
     }
 
-    if (callingUser.teacher && callingUser.id !== shariaEvaluation.teacher.id) {
+    console.log(callingUser.teacher, shariaEvaluation);
+
+    if (
+      callingUser.teacher &&
+      callingUser.teacher.id !== shariaEvaluation.teacher.id
+    ) {
       throw new ForbiddenException('لا يمكنك حذف هذا التقييم');
     }
 

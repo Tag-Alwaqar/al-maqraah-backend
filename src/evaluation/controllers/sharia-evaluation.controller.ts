@@ -60,7 +60,7 @@ export class ShariaEvaluationController {
     const teacher = await this.usersService.findOneById(userId);
     const shariaEvaluation = await this.shariaEvaluationsService.create(
       data,
-      teacher.teacher.id,
+      teacher,
     );
 
     return new ShariaEvaluationDto(shariaEvaluation);
