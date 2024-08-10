@@ -11,6 +11,7 @@ export class Admin extends SoftDeletableEntity {
   @OneToOne(() => User, (user) => user.admin, {
     onDelete: 'CASCADE',
     cascade: true,
+    eager: true,
   })
   @JoinColumn({ name: 'user_id' })
   user: User;
