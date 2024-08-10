@@ -170,7 +170,7 @@ export class ExamEvaluationsService {
     const examEvaluation = await this.findOneById(id);
 
     if (!examEvaluation) {
-      throw new NotFoundException('هذا التقييم غير موجودة');
+      throw new NotFoundException('هذا التقييم غير موجود');
     }
 
     Object.keys(data).forEach((key) => {

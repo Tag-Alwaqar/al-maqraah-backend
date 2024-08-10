@@ -11,6 +11,7 @@ import { BadRequestExceptionFilter } from '@common/filters/bad-request.filter';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { GroupModule } from '@group/group.module';
 import { EvaluationModule } from '@evaluation/evaluation.module';
+import { FeesModule } from '@fees/fees.module';
 
 @Module({
   imports: [
@@ -18,14 +19,15 @@ import { EvaluationModule } from '@evaluation/evaluation.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(databaseConfig),
-    UserModule,
-    CommonModule,
     ClsModule.forRoot({
       global: true,
       middleware: { mount: true },
     }),
+    CommonModule,
+    UserModule,
     GroupModule,
     EvaluationModule,
+    FeesModule,
   ],
   controllers: [],
   providers: [

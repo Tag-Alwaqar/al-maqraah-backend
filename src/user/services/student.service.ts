@@ -13,7 +13,7 @@ import { isDefined } from 'class-validator';
 import { Repository } from 'typeorm';
 import { UsersService } from './user.service';
 import { PaginationService } from '@common/pagination.service';
-import { ReverseStudentDto } from '@user/dto/user.dto';
+import { ReversedStudentDto } from '@user/dto/user.dto';
 import { StudentsQueryDto } from '@user/dto/students-query.dto';
 
 @Injectable()
@@ -78,7 +78,7 @@ export class StudentsService {
       pageOptionsDto,
       query,
       mapToDto: async (student: Student[]) =>
-        student.map((student) => new ReverseStudentDto(student)),
+        student.map((student) => new ReversedStudentDto(student)),
     });
   }
 
@@ -115,7 +115,7 @@ export class StudentsService {
       pageOptionsDto,
       query,
       mapToDto: async (student: Student[]) =>
-        student.map((student) => new ReverseStudentDto(student)),
+        student.map((student) => new ReversedStudentDto(student)),
     });
   }
 

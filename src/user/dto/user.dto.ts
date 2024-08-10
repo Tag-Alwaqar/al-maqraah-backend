@@ -81,21 +81,30 @@ export class UserDto {
   }
 }
 
-export class ReverseStudentDto extends UserDto {
-  constructor(student: Student) {
-    super(student.user);
-    delete student.user;
-    this.student = new StudentDto(student);
-    this.type = UserType.Student;
+export class ReversedAdminDto extends UserDto {
+  constructor(admin: Admin) {
+    super(admin.user);
+    delete admin.user;
+    this.admin = new AdminDto(admin);
+    this.type = UserType.Admin;
   }
 }
 
-export class ReverseTeacherDto extends UserDto {
+export class ReversedTeacherDto extends UserDto {
   constructor(teacher: Teacher) {
     super(teacher.user);
     delete teacher.user;
     this.teacher = new TeacherDto(teacher);
     this.type = UserType.Teacher;
+  }
+}
+
+export class ReversedStudentDto extends UserDto {
+  constructor(student: Student) {
+    super(student.user);
+    delete student.user;
+    this.student = new StudentDto(student);
+    this.type = UserType.Student;
   }
 }
 
