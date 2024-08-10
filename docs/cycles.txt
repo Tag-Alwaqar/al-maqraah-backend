@@ -40,5 +40,3 @@ Admin:
     10. Could view a teacher stats, currently it is only summed duration of both QuraanEvaluation & ShariaEvaluation, sending (2024-05).
     11. Could add/update/delete QuraanEvaluation & ShariaEvaluation.
     12. Could add/update/delete ExamEvaluation.
-
-seed users data (admin, teachers and students) and groups

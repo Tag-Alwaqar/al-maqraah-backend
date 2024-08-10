@@ -11,6 +11,7 @@ export class Student extends SoftDeletableEntity {
   @OneToOne(() => User, (user) => user.student, {
     onDelete: 'CASCADE',
     cascade: true,
+    eager: true,
   })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -33,18 +34,4 @@ export class Student extends SoftDeletableEntity {
   // })
   // @JoinTable()
   // fees?: Fees[];
-
-  // @OneToMany(() => QuraanEvaluation, {
-  //   onDelete: 'SET NULL',
-  //   nullable: true,
-  // })
-  // @JoinTable()
-  // quraan_evaluations?: QuraanEvaluation[];
-
-  // @OneToMany(() => ShariaEvaluation, {
-  //   onDelete: 'SET NULL',
-  //   nullable: true,
-  // })
-  // @JoinTable()
-  // sharia_evaluations?: ShariaEvaluation[];
 }

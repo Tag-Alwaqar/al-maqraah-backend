@@ -90,6 +90,15 @@ export class ReverseStudentDto extends UserDto {
   }
 }
 
+export class ReverseTeacherDto extends UserDto {
+  constructor(teacher: Teacher) {
+    super(teacher.user);
+    delete teacher.user;
+    this.teacher = new TeacherDto(teacher);
+    this.type = UserType.Teacher;
+  }
+}
+
 export class GetUserResponseDto extends UserDto {
   forget_pass_token?: string;
   constructor(user: User) {

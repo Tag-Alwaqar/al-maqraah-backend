@@ -57,12 +57,12 @@ Revision:
     grade?: number => 0 => 5
 
 NewSurah:
+    surah: number => 1 => 114
     start_ayah: number
     end_ayah: number
     grade?: number => 0 => 5
 
 Evaluation:
-    taken_at: Date and time
     group_id: number
     student_id: number
     teacher_id: number
@@ -83,6 +83,5 @@ ExamEvaluation extends BaseEntity:
     name: string
     group_id: number
     student_id: number
-    group_type: GroupEnum
-    final_score: number
+    max_grade: number
     grade: number

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SeederInterface } from './seeder.interface';
 import { AdminSeeder } from './admin/admin.seeder';
-import { EntityManager } from 'typeorm';
 import { TeacherSeeder } from './teacher/teacher.seeder';
 import { StudentSeeder } from './student/student.seeder';
 import { GroupSeeder } from './group/group.seeder';
@@ -11,7 +10,6 @@ export class SeederService {
   private readonly seeders: SeederInterface[] = [];
 
   constructor(
-    private readonly manager: EntityManager,
     private readonly adminSeeder: AdminSeeder,
     private readonly teacherSeeder: TeacherSeeder,
     private readonly studentSeeder: StudentSeeder,
@@ -19,9 +17,9 @@ export class SeederService {
   ) {
     this.seeders = [
       this.adminSeeder,
-      this.teacherSeeder,
-      this.studentSeeder,
-      this.groupSeeder,
+      this.teacherSeeder, // to be commented
+      this.studentSeeder, // to be commented
+      this.groupSeeder, // to be commented
     ];
   }
 

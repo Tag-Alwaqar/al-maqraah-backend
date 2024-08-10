@@ -2,6 +2,7 @@ import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { PaginationService } from '@common/pagination.service';
 import {
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -117,7 +118,7 @@ export class GroupsService {
     }
 
     if (callingUser.teacher && callingUser.gender !== group.gender) {
-      throw new NotFoundException('لا يمكنك الوصول إلى هذه المجموعة');
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه المجموعة');
     }
 
     if (callingUser.student) {
@@ -126,7 +127,7 @@ export class GroupsService {
       );
 
       if (!student.groups.find((group) => group.id === id)) {
-        throw new NotFoundException('لا يمكنك الوصول إلى هذه المجموعة');
+        throw new ForbiddenException('لا يمكنك الوصول إلى هذه المجموعة');
       }
     }
 
