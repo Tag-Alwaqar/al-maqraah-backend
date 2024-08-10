@@ -17,14 +17,14 @@ Auth: => DONE
 Student:
     1. Could see his profile. => DONE
     2. Could update profile.  => DONE
-    3. Could see his QuraanEvaluation and ShariaEvaluation, filtering by date (2024-05-18).
+    3. Could see his QuraanEvaluation and ShariaEvaluation, ordered by created_at desc. => DONE
 
 Teacher:
     1. Could see his profile. => DONE
     2. Could update profile. => DONE
     3. Could read groups basic info and group students with same gender. => DONE
     4. Could add/update QuraanEvaluation & ShariaEvaluation.
-        On adding QuraanEvaluation, backend updates current_surah & current_ayah in student.
+        On adding QuraanEvaluation, backend updates current_surah & current_ayah in student. => DONE
 
 Admin:
     1. Could see his profile. => DONE
@@ -37,8 +37,9 @@ Admin:
     7. Could view a list of pending signups, and could approve anyone. => DONE
     8. Could view a list of students, and delete anyone. => DONE
     9. Could view a list of teachers, and delete anyone. => DONE
-    10. Could view a teacher stats, currently it is only summed duration of both QuraanEvaluation & ShariaEvaluation, sending (2024-05).
-    11. Could add/update/delete QuraanEvaluation & ShariaEvaluation.
-    12. Could add/update/delete ExamEvaluation.
-
-seed users data (admin, teachers and students) and groups
+    10. Could add/update/delete QuraanEvaluation & ShariaEvaluation. => DONE
+    11. Could add/update/delete ExamEvaluation. => DONE
+    12. Could view/add/update/delete fees using group_id & student_id, 
+        and could filter using group_id, student_id, returned ordered by created_at desc.
+    13. Could view a teacher stats, currently it is only summed duration of both QuraanEvaluation & ShariaEvaluation, 
+        sending (2024-05).

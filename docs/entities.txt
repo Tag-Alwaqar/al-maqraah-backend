@@ -35,7 +35,6 @@ Fees:
     admin_id: number
     group_id: number
     student_id: number
-    paid_at: Date // (2024-08-01)
     price: number // in EGP
 
 GroupEnum:
