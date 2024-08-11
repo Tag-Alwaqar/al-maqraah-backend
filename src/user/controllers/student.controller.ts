@@ -1,4 +1,5 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
+import { NotPaidStudentsQueryDto } from '@fees/dto/fees-query.dto';
 import { GroupType } from '@group/enums/group-type.enum';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -41,6 +42,18 @@ export class StudentController {
     return await this.studentsService.getNotAssignedStudents(
       pageOptionsDto,
       notAssignedStudentsQueryDto,
+    );
+  }
+
+  @Get('not-paid')
+  @AdminAuth()
+  async getNotPaidStudents(
+    @Query() pageOptionsDto: PageOptionsDto,
+    @Query() notPaidStudentsQueryDto: NotPaidStudentsQueryDto,
+  ) {
+    return await this.studentsService.getNotPaidStudents(
+      pageOptionsDto,
+      notPaidStudentsQueryDto,
     );
   }
 }

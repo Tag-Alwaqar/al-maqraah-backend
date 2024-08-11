@@ -23,6 +23,7 @@ import { AdminController } from './controllers/admin.controller';
 import { Group } from '@group/entities/group.entity';
 import { GroupModule } from '@group/group.module';
 import { StudentController } from './controllers/student.controller';
+import { FeesModule } from '@fees/fees.module';
 
 @Module({
   imports: [

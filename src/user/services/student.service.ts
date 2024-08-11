@@ -18,6 +18,7 @@ import {
   NotAssignedStudentsQueryDto,
   StudentsQueryDto,
 } from '@user/dto/students-query.dto';
+import { NotPaidStudentsQueryDto } from '@fees/dto/fees-query.dto';
 
 @Injectable()
 export class StudentsService {
@@ -121,6 +122,57 @@ export class StudentsService {
     if (isDefined(queryDto.search))
       query.andWhere('user.name LIKE :search', {
         search: `%${queryDto.search}%`,
+      });
+
+    query.orderBy('user.name', 'ASC');
+
+    return this.paginationService.paginate({
+      pageOptionsDto,
+      query,
+      mapToDto: async (student: Student[]) =>
+        student.map((student) => new ReversedStudentDto(student)),
+    });
+  }
+
+  async getNotPaidStudents(
+    pageOptionsDto: PageOptionsDto,
+    queryDto: NotPaidStudentsQueryDto,
+  ) {
+    const query = this.studentsRepository
+      .createQueryBuilder('student')
+      .leftJoinAndSelect('student.user', 'user')
+      .leftJoinAndSelect('student.groups', 'group')
+      .leftJoinAndSelect('student.fees', 'fees')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from('fees', 'f')
+          .where('f.student_id = student.id')
+          .andWhere('f.month = :month')
+          .getQuery();
+        return `NOT EXISTS ${subQuery}`;
+      })
+      .setParameter('month', queryDto.month);
+
+    if (isDefined(queryDto.gender))
+      query.andWhere('user.gender = :gender', {
+        gender: queryDto.gender,
+      });
+
+    if (isDefined(queryDto.search))
+      query.andWhere('user.name LIKE :search', {
+        search: `%${queryDto.search}%`,
+      });
+
+    if (isDefined(queryDto.groupType))
+      query.andWhere('group.type = :groupType', {
+        groupType: queryDto.groupType,
+      });
+
+    if (isDefined(queryDto.group_id))
+      query.andWhere('group.id = :group_id', {
+        group_id: queryDto.group_id,
       });
 
     query.orderBy('user.name', 'ASC');

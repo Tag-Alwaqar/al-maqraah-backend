@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 import { isDefined } from 'class-validator';
 import { StudentsService } from '@user/services/student.service';
 import { GroupsService } from '@group/services/group.service';
-import { UsersService } from '@user/services/user.service';
 import { Fees } from '@fees/entities/fees.entity';
 import { CreateFeesDto } from '@fees/dto/create-fees.dto';
 import { User } from '@user/entities/user.entity';
@@ -26,7 +25,6 @@ export class FeesService {
     private readonly paginationService: PaginationService,
     private readonly groupsService: GroupsService,
     private readonly studentsService: StudentsService,
-    private readonly usersService: UsersService,
   ) {}
 
   async create(data: CreateFeesDto, adminUser: User) {
@@ -79,6 +77,11 @@ export class FeesService {
     if (isDefined(feesQuery.student_id))
       query.andWhere('student.id = :student_id', {
         student_id: feesQuery.student_id,
+      });
+
+    if (isDefined(feesQuery.groupType))
+      query.andWhere('group.type = :groupType', {
+        groupType: feesQuery.groupType,
       });
 
     if (isDefined(feesQuery.gender))

@@ -1,3 +1,5 @@
+import { GroupType } from '@group/enums/group-type.enum';
+import { OmitType } from '@nestjs/mapped-types';
 import { Gender } from '@user/enums/gender.enum';
 import { Transform } from 'class-transformer';
 import {
@@ -29,6 +31,11 @@ export class FeesQueryDto {
 
   @IsOptional()
   @IsNotEmpty()
+  @IsEnum(GroupType)
+  groupType?: GroupType;
+
+  @IsOptional()
+  @IsNotEmpty()
   @IsEnum(Gender)
   gender?: Gender;
 
@@ -41,4 +48,14 @@ export class FeesQueryDto {
   @IsNotEmpty()
   @IsString()
   month?: string;
+}
+
+export class NotPaidStudentsQueryDto extends OmitType(FeesQueryDto, [
+  'month',
+  'admin_id',
+  'student_id',
+]) {
+  @IsNotEmpty()
+  @IsString()
+  month: string;
 }
