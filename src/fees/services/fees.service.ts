@@ -81,6 +81,19 @@ export class FeesService {
         student_id: feesQuery.student_id,
       });
 
+    if (isDefined(feesQuery.gender))
+      query.andWhere('studentUser.gender = :gender', {
+        gender: feesQuery.gender,
+      });
+
+    if (isDefined(feesQuery.search))
+      query.andWhere(
+        '(studentUser.name LIKE :search OR group.name LIKE :search)',
+        {
+          search: `%${feesQuery.search}%`,
+        },
+      );
+
     query.orderBy('fees.created_at', 'DESC');
 
     return this.paginationService.paginate({

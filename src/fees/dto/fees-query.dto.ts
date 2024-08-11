@@ -1,5 +1,12 @@
+import { Gender } from '@user/enums/gender.enum';
 import { Transform } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class FeesQueryDto {
   @IsOptional()
@@ -19,4 +26,14 @@ export class FeesQueryDto {
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10))
   student_id?: number;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(Gender)
+  gender?: Gender;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  search?: string;
 }
