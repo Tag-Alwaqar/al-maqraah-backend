@@ -60,9 +60,9 @@ export class GroupsService {
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.admin', 'admin');
 
-    if (isDefined(groupsQuery.name))
-      query.andWhere('group.name LIKE :name', {
-        name: `%${groupsQuery.name}%`,
+    if (isDefined(groupsQuery.search))
+      query.andWhere('group.name LIKE :search', {
+        search: `%${groupsQuery.search}%`,
       });
 
     if (isDefined(groupsQuery.type))

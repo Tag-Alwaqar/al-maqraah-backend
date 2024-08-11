@@ -6,7 +6,7 @@ export class GroupsQueryDto {
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  name?: string;
+  search?: string;
 
   @IsOptional()
   @IsNotEmpty()

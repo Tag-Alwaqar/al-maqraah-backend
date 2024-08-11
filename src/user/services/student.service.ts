@@ -14,7 +14,10 @@ import { Repository } from 'typeorm';
 import { UsersService } from './user.service';
 import { PaginationService } from '@common/pagination.service';
 import { ReversedStudentDto } from '@user/dto/user.dto';
-import { StudentsQueryDto } from '@user/dto/students-query.dto';
+import {
+  NotAssignedStudentsQueryDto,
+  StudentsQueryDto,
+} from '@user/dto/students-query.dto';
 
 @Injectable()
 export class StudentsService {
@@ -39,6 +42,7 @@ export class StudentsService {
     pageOptionsDto: PageOptionsDto,
     groupId: number,
     callingUserId: number,
+    studentsQueryDto: StudentsQueryDto,
   ) {
     const group = await this.groupsService.findOneById(groupId);
 
@@ -72,6 +76,16 @@ export class StudentsService {
       .leftJoinAndSelect('student.groups', 'group')
       .where('group.id = :groupId', { groupId });
 
+    if (isDefined(studentsQueryDto.gender))
+      query.andWhere('user.gender = :gender', {
+        gender: studentsQueryDto.gender,
+      });
+
+    if (isDefined(studentsQueryDto.search))
+      query.andWhere('user.name LIKE :search', {
+        search: `%${studentsQueryDto.search}%`,
+      });
+
     query.orderBy('user.name', 'ASC');
 
     return this.paginationService.paginate({
@@ -84,13 +98,13 @@ export class StudentsService {
 
   async getNotAssignedStudents(
     pageOptionsDto: PageOptionsDto,
-    studentsQueryDto: StudentsQueryDto,
+    queryDto: NotAssignedStudentsQueryDto,
   ) {
     const subQuery = this.studentsRepository
       .createQueryBuilder('student')
       .select('student.id')
       .leftJoin('student.groups', 'group')
-      .where('group.type = :type', { type: studentsQueryDto.groupType });
+      .where('group.type = :type', { type: queryDto.groupType });
 
     const query = this.studentsRepository
       .createQueryBuilder('student')
@@ -99,14 +113,14 @@ export class StudentsService {
       .where(`student.id NOT IN (${subQuery.getQuery()})`)
       .setParameters(subQuery.getParameters());
 
-    if (studentsQueryDto.gender)
+    if (isDefined(queryDto.gender))
       query.andWhere('user.gender = :gender', {
-        gender: studentsQueryDto.gender,
+        gender: queryDto.gender,
       });
 
-    if (studentsQueryDto.search)
+    if (isDefined(queryDto.search))
       query.andWhere('user.name LIKE :search', {
-        search: `%${studentsQueryDto.search}%`,
+        search: `%${queryDto.search}%`,
       });
 
     query.orderBy('user.name', 'ASC');

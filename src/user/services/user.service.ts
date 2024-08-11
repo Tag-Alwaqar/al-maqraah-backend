@@ -85,6 +85,12 @@ export class UsersService {
       query.andWhere('user.forget_pass_token IS NULL');
     }
 
+    if (isDefined(usersQuery.search)) {
+      query.andWhere('user.name LIKE :search', {
+        search: `%${usersQuery.search}%`,
+      });
+    }
+
     query.orderBy('user.name', 'ASC');
 
     return this.paginationService.paginate({

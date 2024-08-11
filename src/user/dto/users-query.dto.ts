@@ -5,6 +5,11 @@ import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class UsersQueryDto {
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
   @Transform(({ value }) => value === 'true')
   pending?: boolean;
 

@@ -5,7 +5,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { AdminAuth } from '@user/authentication/decorators/admin-auth.decorator';
 import { UserAuth } from '@user/authentication/decorators/user-auth.decorator';
 import { User } from '@user/authentication/decorators/user.decorator';
-import { StudentsQueryDto } from '@user/dto/students-query.dto';
+import {
+  NotAssignedStudentsQueryDto,
+  StudentsQueryDto,
+} from '@user/dto/students-query.dto';
 import { StudentsService } from '@user/services/student.service';
 
 @ApiTags('Student')
@@ -17,6 +20,7 @@ export class StudentController {
   @UserAuth()
   async getGroupStudents(
     @Query() pageOptionsDto: PageOptionsDto,
+    @Query() studentsQueryDto: StudentsQueryDto,
     @Param('id') groupId: string,
     @User('id') callingUserId: number,
   ) {
@@ -24,6 +28,7 @@ export class StudentController {
       pageOptionsDto,
       +groupId,
       callingUserId,
+      studentsQueryDto,
     );
   }
 
@@ -31,11 +36,11 @@ export class StudentController {
   @AdminAuth()
   async getNotAssignedStudents(
     @Query() pageOptionsDto: PageOptionsDto,
-    @Query() studentsQueryDto: StudentsQueryDto,
+    @Query() notAssignedStudentsQueryDto: NotAssignedStudentsQueryDto,
   ) {
     return await this.studentsService.getNotAssignedStudents(
       pageOptionsDto,
-      studentsQueryDto,
+      notAssignedStudentsQueryDto,
     );
   }
 }

@@ -1,8 +1,9 @@
 import { GroupType } from '@group/enums/group-type.enum';
+import { OmitType } from '@nestjs/mapped-types';
 import { Gender } from '@user/enums/gender.enum';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class StudentsQueryDto {
+export class NotAssignedStudentsQueryDto {
   @IsNotEmpty()
   @IsEnum(GroupType)
   groupType!: GroupType;
@@ -17,3 +18,7 @@ export class StudentsQueryDto {
   @IsString()
   search?: string;
 }
+
+export class StudentsQueryDto extends OmitType(NotAssignedStudentsQueryDto, [
+  'groupType',
+]) {}
