@@ -36,4 +36,9 @@ export class FeesQueryDto {
   @IsNotEmpty()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  month?: string;
 }

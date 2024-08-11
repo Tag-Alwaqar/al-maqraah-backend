@@ -94,6 +94,11 @@ export class FeesService {
         },
       );
 
+    if (isDefined(feesQuery.month))
+      query.andWhere('fees.month = :month', {
+        month: feesQuery.month,
+      });
+
     query.orderBy('fees.created_at', 'DESC');
 
     return this.paginationService.paginate({
@@ -160,8 +165,6 @@ export class FeesService {
     } else {
       // make sure that current student is in the group
       const student = await this.studentsService.findOneById(fees.student.id);
-
-      console.log(student.groups, fees.group.id);
 
       if (
         !student.groups.find(

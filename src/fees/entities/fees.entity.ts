@@ -38,4 +38,7 @@ export class Fees extends SoftDeletableEntity {
 
   @Column({ type: 'float' })
   price: number;
+
+  @Column({ type: 'varchar' })
+  month: string; // 2024-08
 }

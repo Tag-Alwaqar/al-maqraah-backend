@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateFeesDto {
   @IsNotEmpty()
@@ -12,4 +12,8 @@ export class CreateFeesDto {
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  @IsNotEmpty()
+  @IsString()
+  month: string;
 }

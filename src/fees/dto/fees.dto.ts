@@ -10,6 +10,7 @@ export class FeesDto {
   group: GroupDto;
   student: ReversedStudentDto;
   price: number;
+  month: string;
   constructor(fees: Fees) {
     this.id = fees.id;
     this.created_at = fees.created_at;
@@ -18,5 +19,6 @@ export class FeesDto {
     this.group = new GroupDto(fees.group);
     this.student = new ReversedStudentDto(fees.student);
     this.price = fees.price;
+    this.month = fees.month;
   }
 }
