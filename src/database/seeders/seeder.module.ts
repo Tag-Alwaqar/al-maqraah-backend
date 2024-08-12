@@ -12,12 +12,28 @@ import { Group } from '@group/entities/group.entity';
 import { TeacherSeeder } from './teacher/teacher.seeder';
 import { StudentSeeder } from './student/student.seeder';
 import { GroupSeeder } from './group/group.seeder';
+import { QuraanEvaluation } from '@evaluation/entities/quraan-evaluation.entity';
+import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity';
+import { ExamEvaluation } from '@evaluation/entities/exam-evaluation.entity';
+import { Fees } from '@fees/entities/fees.entity';
+import { Session } from 'src/session/entities/session.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     TypeOrmModule.forRootAsync(databaseConfig),
-    TypeOrmModule.forFeature([User, Admin, Teacher, Student, Group]),
+    TypeOrmModule.forFeature([
+      User,
+      Admin,
+      Teacher,
+      Student,
+      Group,
+      QuraanEvaluation,
+      ShariaEvaluation,
+      ExamEvaluation,
+      Fees,
+      Session,
+    ]),
   ],
   providers: [
     SeederService,
