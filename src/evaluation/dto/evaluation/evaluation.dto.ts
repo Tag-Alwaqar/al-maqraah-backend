@@ -10,7 +10,6 @@ export class EvaluationDto {
   student: ReversedStudentDto;
   teacher: ReversedTeacherDto;
   ethics_grade: boolean;
-  duration: number;
   constructor(evaluation: Evaluation) {
     this.id = evaluation.id;
     this.created_at = evaluation.created_at;
@@ -19,6 +18,5 @@ export class EvaluationDto {
     this.student = new ReversedStudentDto(evaluation.student);
     this.teacher = new ReversedTeacherDto(evaluation.teacher);
     this.ethics_grade = evaluation.ethics_grade;
-    this.duration = evaluation.duration;
   }
 }

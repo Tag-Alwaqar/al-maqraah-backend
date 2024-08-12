@@ -57,10 +57,9 @@ export class ShariaEvaluationController {
     @Body() data: CreateShariaEvaluationDto,
     @User('id') userId: number,
   ) {
-    const teacher = await this.usersService.findOneById(userId);
     const shariaEvaluation = await this.shariaEvaluationsService.create(
       data,
-      teacher,
+      userId,
     );
 
     return new ShariaEvaluationDto(shariaEvaluation);

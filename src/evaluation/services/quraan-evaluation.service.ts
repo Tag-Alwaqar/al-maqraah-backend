@@ -28,7 +28,9 @@ export class QuraanEvaluationsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(data: CreateQuraanEvaluationDto, teacherUser: User) {
+  async create(data: CreateQuraanEvaluationDto, teacherUserId: number) {
+    const teacherUser = await this.usersService.findOneById(teacherUserId);
+
     const { student_id, group_id, ...rest } = data;
 
     const student = await this.studentsService.findOneById(data.student_id);

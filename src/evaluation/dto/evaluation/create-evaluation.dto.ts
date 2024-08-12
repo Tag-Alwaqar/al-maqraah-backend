@@ -12,8 +12,4 @@ export class CreateEvaluationDto {
   @IsNotEmpty()
   @IsBoolean()
   ethics_grade: boolean;
-
-  @IsNotEmpty()
-  @IsInt()
-  duration: number;
 }

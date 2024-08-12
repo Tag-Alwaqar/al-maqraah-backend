@@ -12,6 +12,7 @@ import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { GroupModule } from '@group/group.module';
 import { EvaluationModule } from '@evaluation/evaluation.module';
 import { FeesModule } from '@fees/fees.module';
+import { SessionModule } from './session/session.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FeesModule } from '@fees/fees.module';
     GroupModule,
     EvaluationModule,
     FeesModule,
+    SessionModule,
   ],
   controllers: [],
   providers: [
