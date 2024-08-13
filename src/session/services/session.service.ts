@@ -12,10 +12,10 @@ import { GroupsService } from '@group/services/group.service';
 import { UsersService } from '@user/services/user.service';
 import { Session } from '../entities/session.entity';
 import { CreateSessionDto } from '../dto/create-session.dto';
-import { User } from '@user/entities/user.entity';
 import { SessionsQueryDto } from '../dto/sessions-query.dto';
 import { SessionDto } from '../dto/session.dto';
 import { UpdateSessionDto } from '../dto/update-session.dto';
+import { SessionsStatsQueryDto } from '../dto/sessions-stats-query.dto';
 
 @Injectable()
 export class SessionsService {
@@ -117,11 +117,51 @@ export class SessionsService {
     if (callingUser.student)
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
 
-    if (callingUser.teacher && callingUser.teacher.id !== session.teacher.id) {
+    if (callingUser.teacher && callingUser.teacher.id !== session.teacher.id)
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
-    }
 
     return session;
+  }
+
+  async stats(callingUserId: number, queryData: SessionsStatsQueryDto) {
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    if (callingUser.student)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
+    if (callingUser.teacher && callingUser.teacher.id !== queryData.teacher_id)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
+    const query = this.sessionsRepository.createQueryBuilder('session');
+
+    query.select('SUM(session.duration)', 'total_duration');
+
+    query.where('teacher_id = :teacher_id', {
+      teacher_id: queryData.teacher_id,
+    });
+
+    const year = queryData.month.split('-')[0];
+    const month = queryData.month.split('-')[1];
+
+    query.andWhere('EXTRACT(YEAR FROM session.created_at) = :year', {
+      year,
+    });
+
+    query.andWhere('EXTRACT(MONTH FROM session.created_at) = :month', {
+      month,
+    });
+
+    if (isDefined(queryData.group_id)) {
+      query.andWhere('group_id = :group_id', {
+        group_id: queryData.group_id,
+      });
+    }
+
+    return await query.getRawOne();
   }
 
   async update(session: Session) {

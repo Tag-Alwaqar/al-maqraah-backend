@@ -41,5 +41,5 @@ Admin:
     11. Could add/update/delete ExamEvaluation. => DONE
     12. Could view/add/update/delete fees using group_id & student_id, 
         and could filter using admin_id, group_id, student_id, returned ordered by created_at desc.
-    13. Could view a teacher stats, currently it is only summed duration of both QuraanEvaluation & ShariaEvaluation, 
-        sending (2024-05).
+    13. Could view a teacher stats, currently it is only summed duration of Session, 
+        sending (2024-05).  => Done

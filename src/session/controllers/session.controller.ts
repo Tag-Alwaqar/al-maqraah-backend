@@ -18,6 +18,7 @@ import { SessionDto } from '../dto/session.dto';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDto } from '../dto/update-session.dto';
 import { TeacherAuth } from '@user/authentication/decorators/teacher-auth.decorator';
+import { SessionsStatsQueryDto } from '../dto/sessions-stats-query.dto';
 
 @ApiTags('Session')
 @Controller('sessions')
@@ -35,6 +36,18 @@ export class SessionController {
       pageOptionsDto,
       sessionsQueryDto,
       callingUserId,
+    );
+  }
+
+  @Get('stats')
+  @UserAuth()
+  async stats(
+    @Query() sessionsStatsQueryDto: SessionsStatsQueryDto,
+    @User('id') callingUserId: number,
+  ) {
+    return await this.sessionsService.stats(
+      callingUserId,
+      sessionsStatsQueryDto,
     );
   }
 
