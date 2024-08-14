@@ -144,16 +144,22 @@ export class StudentsService {
       .leftJoinAndSelect('student.groups', 'group')
       .leftJoinAndSelect('student.fees', 'fees')
       .where((qb) => {
-        const subQuery = qb
+        const subQueryBuilder = qb
           .subQuery()
           .select('1')
           .from('fees', 'f')
           .where('f.student_id = student.id')
-          .andWhere('f.month = :month')
-          .getQuery();
+          .andWhere('f.month = :month');
+
+        if (isDefined(queryDto.group_id))
+          subQueryBuilder.andWhere('f.group_id = :group_id');
+
+        const subQuery = subQueryBuilder.getQuery();
+
         return `NOT EXISTS ${subQuery}`;
       })
-      .setParameter('month', queryDto.month);
+      .setParameter('month', queryDto.month)
+      .setParameter('group_id', queryDto.group_id);
 
     if (isDefined(queryDto.gender))
       query.andWhere('user.gender = :gender', {
@@ -168,11 +174,6 @@ export class StudentsService {
     if (isDefined(queryDto.groupType))
       query.andWhere('group.type = :groupType', {
         groupType: queryDto.groupType,
-      });
-
-    if (isDefined(queryDto.group_id))
-      query.andWhere('group.id = :group_id', {
-        group_id: queryDto.group_id,
       });
 
     query.orderBy('user.name', 'ASC');
