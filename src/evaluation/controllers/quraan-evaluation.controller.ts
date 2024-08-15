@@ -2,6 +2,7 @@ import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { EvaluationsQueryDto } from '@evaluation/dto/evaluation/evaluations-query.dto';
 import { CreateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/create-quraan-evaluation.dto';
 import { QuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/quraan-evaluation.dto';
+import { UpdateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/update-quraan-evaluation.dto';
 import { QuraanEvaluationsService } from '@evaluation/services/quraan-evaluation.service';
 import {
   Body,
@@ -9,6 +10,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -61,6 +63,23 @@ export class QuraanEvaluationController {
       data,
       userId,
     );
+
+    return new QuraanEvaluationDto(quraanEvaluation);
+  }
+
+  @Patch(':id')
+  @UserAuth()
+  async update(
+    @Param('id') id: string,
+    @Body() data: UpdateQuraanEvaluationDto,
+    @User('id') userId: number,
+  ) {
+    const quraanEvaluation =
+      await this.quraanEvaluationsService.updateQuraanEvaluation(
+        +id,
+        data,
+        userId,
+      );
 
     return new QuraanEvaluationDto(quraanEvaluation);
   }

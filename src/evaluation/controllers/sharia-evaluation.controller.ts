@@ -2,6 +2,7 @@ import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { EvaluationsQueryDto } from '@evaluation/dto/evaluation/evaluations-query.dto';
 import { CreateShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/create-sharia-evaluation.dto';
 import { ShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/sharia-evaluation.dto';
+import { UpdateShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/update-sharia-evaluation.dto';
 import { ShariaEvaluationsService } from '@evaluation/services/sharia-evaluation.service';
 import {
   Body,
@@ -9,6 +10,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -61,6 +63,23 @@ export class ShariaEvaluationController {
       data,
       userId,
     );
+
+    return new ShariaEvaluationDto(shariaEvaluation);
+  }
+
+  @Patch(':id')
+  @UserAuth()
+  async update(
+    @Param('id') id: string,
+    @Body() data: UpdateShariaEvaluationDto,
+    @User('id') userId: number,
+  ) {
+    const shariaEvaluation =
+      await this.shariaEvaluationsService.updateShariaEvaluation(
+        +id,
+        data,
+        userId,
+      );
 
     return new ShariaEvaluationDto(shariaEvaluation);
   }

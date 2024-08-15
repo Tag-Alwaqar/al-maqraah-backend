@@ -16,6 +16,7 @@ import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity'
 import { CreateShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/create-sharia-evaluation.dto';
 import { ShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/sharia-evaluation.dto';
 import { User } from '@user/entities/user.entity';
+import { UpdateShariaEvaluationDto } from '@evaluation/dto/sharia-evaluation/update-sharia-evaluation.dto';
 
 @Injectable()
 export class ShariaEvaluationsService {
@@ -55,6 +56,46 @@ export class ShariaEvaluationsService {
     });
 
     return await this.shariaEvaluationsRepository.save(shariaEvaluation);
+  }
+
+  async update(shariaEvaluation: ShariaEvaluation) {
+    return await this.shariaEvaluationsRepository.save(shariaEvaluation);
+  }
+
+  async updateShariaEvaluation(
+    id: number,
+    data: UpdateShariaEvaluationDto,
+    callingUserId: number,
+  ) {
+    const shariaEvaluation = await this.findOneById(id);
+
+    if (!shariaEvaluation) {
+      throw new NotFoundException('هذا التقييم غير موجودة');
+    }
+
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    if (callingUser.student)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
+    if (
+      callingUser.teacher &&
+      callingUser.teacher.id !== shariaEvaluation.teacher.id
+    ) {
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
+    }
+
+    Object.keys(data).forEach((key) => {
+      if (isDefined(data[key])) {
+        shariaEvaluation[key] = data[key];
+      }
+    });
+
+    return await this.update(shariaEvaluation);
   }
 
   async findAll(

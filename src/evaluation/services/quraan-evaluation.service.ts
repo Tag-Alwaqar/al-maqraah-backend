@@ -16,6 +16,7 @@ import { EvaluationsQueryDto } from '@evaluation/dto/evaluation/evaluations-quer
 import { UsersService } from '@user/services/user.service';
 import { QuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/quraan-evaluation.dto';
 import { User } from '@user/entities/user.entity';
+import { UpdateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/update-quraan-evaluation.dto';
 
 @Injectable()
 export class QuraanEvaluationsService {
@@ -60,6 +61,46 @@ export class QuraanEvaluationsService {
       group,
     });
     return await this.quraanEvaluationsRepository.save(quraanEvaluation);
+  }
+
+  async update(quraanEvaluation: QuraanEvaluation) {
+    return await this.quraanEvaluationsRepository.save(quraanEvaluation);
+  }
+
+  async updateQuraanEvaluation(
+    id: number,
+    data: UpdateQuraanEvaluationDto,
+    callingUserId: number,
+  ) {
+    const quraanEvaluation = await this.findOneById(id);
+
+    if (!quraanEvaluation) {
+      throw new NotFoundException('هذا التقييم غير موجودة');
+    }
+
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    if (callingUser.student)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
+    if (
+      callingUser.teacher &&
+      callingUser.teacher.id !== quraanEvaluation.teacher.id
+    ) {
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
+    }
+
+    Object.keys(data).forEach((key) => {
+      if (isDefined(data[key])) {
+        quraanEvaluation[key] = data[key];
+      }
+    });
+
+    return await this.update(quraanEvaluation);
   }
 
   async findAll(
