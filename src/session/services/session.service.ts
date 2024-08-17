@@ -105,7 +105,7 @@ export class SessionsService {
     const session = await this.findOneById(id);
 
     if (!session) {
-      throw new NotFoundException('هذه الجلسة غير موجودة');
+      throw new NotFoundException('هذه الحلقة غير موجودة');
     }
 
     const callingUser = await this.usersService.findOneById(callingUserId);
@@ -118,7 +118,7 @@ export class SessionsService {
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
 
     if (callingUser.teacher && callingUser.teacher.id !== session.teacher.id)
-      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الحلقة');
 
     return session;
   }
@@ -176,7 +176,7 @@ export class SessionsService {
     const session = await this.findOneById(id);
 
     if (!session) {
-      throw new NotFoundException('هذه الجلسة غير موجودة');
+      throw new NotFoundException('هذه الحلقة غير موجودة');
     }
 
     const callingUser = await this.usersService.findOneById(callingUserId);
@@ -189,7 +189,7 @@ export class SessionsService {
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
 
     if (callingUser.teacher && callingUser.teacher.id !== session.teacher.id) {
-      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الحلقة');
     }
 
     Object.keys(data).forEach((key) => {
@@ -207,7 +207,7 @@ export class SessionsService {
     });
 
     if (!session) {
-      throw new NotFoundException('هذه الجلسة غير موجودة');
+      throw new NotFoundException('هذه الحلقة غير موجودة');
     }
 
     const callingUser = await this.usersService.findOneById(callingUserId);
@@ -220,7 +220,7 @@ export class SessionsService {
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
 
     if (callingUser.teacher && callingUser.teacher.id !== session.teacher.id) {
-      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الحلقة');
     }
 
     await this.sessionsRepository.delete(id);

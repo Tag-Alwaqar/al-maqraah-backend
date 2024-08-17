@@ -10,6 +10,10 @@ export class CreateEvaluationDto {
   student_id: number;
 
   @IsNotEmpty()
+  @IsInt()
+  session_id: number;
+
+  @IsNotEmpty()
   @IsBoolean()
   ethics_grade: boolean;
 }

@@ -23,8 +23,8 @@
       "@common/*": ["src/common/*"],
       "@group/*": ["src/group/*"],
       "@evaluation/*": ["src/evaluation/*"],
-      "@exam/*": ["src/exam/*"],
       "@fees/*": ["src/fees/*"],
+      "@session/*": ["src/session/*"],
       "@seeders/*": ["src/database/seeders/*"]
     }
   },

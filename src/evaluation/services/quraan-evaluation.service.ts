@@ -15,8 +15,8 @@ import { CreateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/cre
 import { EvaluationsQueryDto } from '@evaluation/dto/evaluation/evaluations-query.dto';
 import { UsersService } from '@user/services/user.service';
 import { QuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/quraan-evaluation.dto';
-import { User } from '@user/entities/user.entity';
 import { UpdateQuraanEvaluationDto } from '@evaluation/dto/quraan-evaluation/update-quraan-evaluation.dto';
+import { SessionsService } from '@session/services/session.service';
 
 @Injectable()
 export class QuraanEvaluationsService {
@@ -26,13 +26,14 @@ export class QuraanEvaluationsService {
     private readonly paginationService: PaginationService,
     private readonly groupsService: GroupsService,
     private readonly studentsService: StudentsService,
+    private readonly sessionsService: SessionsService,
     private readonly usersService: UsersService,
   ) {}
 
   async create(data: CreateQuraanEvaluationDto, teacherUserId: number) {
     const teacherUser = await this.usersService.findOneById(teacherUserId);
 
-    const { student_id, group_id, ...rest } = data;
+    const { student_id, group_id, session_id, ...rest } = data;
 
     const student = await this.studentsService.findOneById(data.student_id);
 
@@ -41,6 +42,10 @@ export class QuraanEvaluationsService {
     const group = await this.groupsService.findOneById(data.group_id);
 
     if (!group) throw new NotFoundException('هذه المجموعة غير موجودة');
+
+    const session = await this.sessionsService.findOneById(data.session_id);
+
+    if (!session) throw new NotFoundException('هذه الحلقة غير موجودة');
 
     if (teacherUser.gender !== group.gender)
       throw new ForbiddenException('لا يمكنك إضافة تقييم لهذه المجموعة');
@@ -59,6 +64,7 @@ export class QuraanEvaluationsService {
       teacher: teacherUser.teacher,
       student,
       group,
+      session,
     });
     return await this.quraanEvaluationsRepository.save(quraanEvaluation);
   }
@@ -91,7 +97,7 @@ export class QuraanEvaluationsService {
       callingUser.teacher &&
       callingUser.teacher.id !== quraanEvaluation.teacher.id
     ) {
-      throw new ForbiddenException('لا يمكنك الوصول إلى هذه الجلسة');
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
     }
 
     Object.keys(data).forEach((key) => {
@@ -120,7 +126,8 @@ export class QuraanEvaluationsService {
       .leftJoinAndSelect('quraanEvaluation.student', 'student')
       .leftJoinAndSelect('student.user', 'studentUser')
       .leftJoinAndSelect('quraanEvaluation.teacher', 'teacher')
-      .leftJoinAndSelect('teacher.user', 'teacherUser');
+      .leftJoinAndSelect('teacher.user', 'teacherUser')
+      .leftJoinAndSelect('quraanEvaluation.session', 'session');
 
     if (isDefined(evaluationsQuery.group_id))
       query.andWhere('group.id = :group_id', {
@@ -135,6 +142,11 @@ export class QuraanEvaluationsService {
     if (isDefined(evaluationsQuery.teacher_id))
       query.andWhere('teacher.id = :teacher_id', {
         teacher_id: evaluationsQuery.teacher_id,
+      });
+
+    if (isDefined(evaluationsQuery.session_id))
+      query.andWhere('session.id = :session_id', {
+        session_id: evaluationsQuery.session_id,
       });
 
     if (callingUser.teacher)
@@ -173,7 +185,7 @@ export class QuraanEvaluationsService {
   async findOneById(id: number): Promise<QuraanEvaluation | null> {
     return await this.quraanEvaluationsRepository.findOne({
       where: { id },
-      relations: ['group', 'student', 'teacher'],
+      relations: ['group', 'student', 'teacher', 'session'],
     });
   }
 

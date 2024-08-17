@@ -12,6 +12,7 @@ import { ShariaEvaluationController } from './controllers/sharia-evaluation.cont
 import { ExamEvaluationController } from './controllers/exam-evaluation.controller';
 import { ShariaEvaluationsService } from './services/sharia-evaluation.service';
 import { ExamEvaluationsService } from './services/exam-evaluation.service';
+import { SessionModule } from '@session/session.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ExamEvaluationsService } from './services/exam-evaluation.service';
       ExamEvaluation,
     ]),
     CommonModule,
+    SessionModule,
   ],
   controllers: [
     QuraanEvaluationController,

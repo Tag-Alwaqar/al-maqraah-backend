@@ -1,6 +1,7 @@
 import { Evaluation } from '@evaluation/entities/evaluation.entity';
 import { GroupDto } from '@group/dto/group.dto';
 import { ReversedStudentDto, ReversedTeacherDto } from '@user/dto/user.dto';
+import { SessionDto } from '@session/dto/session.dto';
 
 export class EvaluationDto {
   id: number;
@@ -9,6 +10,7 @@ export class EvaluationDto {
   group: GroupDto;
   student: ReversedStudentDto;
   teacher: ReversedTeacherDto;
+  session: SessionDto;
   ethics_grade: boolean;
   constructor(evaluation: Evaluation) {
     this.id = evaluation.id;
@@ -17,6 +19,7 @@ export class EvaluationDto {
     this.group = new GroupDto(evaluation.group);
     this.student = new ReversedStudentDto(evaluation.student);
     this.teacher = new ReversedTeacherDto(evaluation.teacher);
+    this.session = new SessionDto(evaluation.session);
     this.ethics_grade = evaluation.ethics_grade;
   }
 }

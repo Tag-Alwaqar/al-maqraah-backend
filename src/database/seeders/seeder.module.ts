@@ -16,7 +16,7 @@ import { QuraanEvaluation } from '@evaluation/entities/quraan-evaluation.entity'
 import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity';
 import { ExamEvaluation } from '@evaluation/entities/exam-evaluation.entity';
 import { Fees } from '@fees/entities/fees.entity';
-import { Session } from 'src/session/entities/session.entity';
+import { Session } from '@session/entities/session.entity';
 
 @Module({
   imports: [

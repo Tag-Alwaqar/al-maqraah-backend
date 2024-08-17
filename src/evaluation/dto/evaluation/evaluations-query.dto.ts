@@ -19,4 +19,10 @@ export class EvaluationsQueryDto {
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10))
   teacher_id?: number;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsInt()
+  @Transform(({ value }) => parseInt(value, 10))
+  session_id?: number;
 }

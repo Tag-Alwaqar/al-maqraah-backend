@@ -84,6 +84,6 @@ export class SessionController {
   async delete(@Param('id') id: string, @User('id') userId: number) {
     await this.sessionsService.delete(+id, userId);
 
-    return { message: 'تم حذف الجلسة بنجاح' };
+    return { message: 'تم حذف الحلقة بنجاح' };
   }
 }

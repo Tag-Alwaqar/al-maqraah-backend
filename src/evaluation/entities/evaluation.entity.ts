@@ -5,7 +5,7 @@ import { Student } from '@user/entities/student.entity';
 import { Teacher } from '@user/entities/teacher.entity';
 import { IsNotEmpty, IsInt, IsOptional, Min, Max } from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
-
+import { Session } from '@session/entities/session.entity';
 export class Revision {
   @IsNotEmpty()
   @IsInt()
@@ -80,6 +80,13 @@ export abstract class Evaluation extends SoftDeletableEntity {
   })
   @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
+
+  @ManyToOne(() => Session, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'session_id' })
+  session: Session;
 
   @Column({ type: 'bool' })
   ethics_grade: boolean;
