@@ -1,6 +1,7 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { PaginationService } from '@common/pagination.service';
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -58,6 +59,16 @@ export class QuraanEvaluationsService {
     student.current_ayah = data.current_new_surah.end_ayah;
 
     await this.studentsService.update(student);
+
+    const oldEvaluation = await this.quraanEvaluationsRepository.findOne({
+      where: {
+        session_id: data.session_id,
+        student_id: data.student_id,
+      },
+    });
+
+    if (oldEvaluation)
+      throw new ConflictException('يوجد تقييم سابق لهذا الطالب في هذه الحلقة');
 
     const quraanEvaluation = this.quraanEvaluationsRepository.create({
       ...rest,

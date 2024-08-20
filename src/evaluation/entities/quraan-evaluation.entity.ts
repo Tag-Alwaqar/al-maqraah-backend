@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Unique } from 'typeorm';
 import {
   Evaluation,
   NewSurah,
@@ -8,6 +8,7 @@ import {
 } from './evaluation.entity';
 
 @Entity({ name: 'quraan_evaluation' })
+@Unique(['session_id', 'student_id'])
 export class QuraanEvaluation extends Evaluation {
   @Column({ type: 'json' })
   current_revision: Revision;

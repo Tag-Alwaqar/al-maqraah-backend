@@ -81,6 +81,9 @@ export abstract class Evaluation extends SoftDeletableEntity {
   @JoinColumn({ name: 'teacher_id' })
   teacher: Teacher;
 
+  @Column({ type: 'int' })
+  session_id: number;
+
   @ManyToOne(() => Session, {
     eager: true,
     onDelete: 'CASCADE',

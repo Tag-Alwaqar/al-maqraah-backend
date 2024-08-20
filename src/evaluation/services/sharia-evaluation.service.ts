@@ -1,6 +1,7 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
 import { PaginationService } from '@common/pagination.service';
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -52,6 +53,16 @@ export class ShariaEvaluationsService {
 
     if (!student.groups.find((studentGroup) => studentGroup.id === group.id))
       throw new NotFoundException('هذا الطالب ليس في هذه المجموعة');
+
+    const oldEvaluation = await this.shariaEvaluationsRepository.findOne({
+      where: {
+        session_id: data.session_id,
+        student_id: data.student_id,
+      },
+    });
+
+    if (oldEvaluation)
+      throw new ConflictException('يوجد تقييم سابق لهذا الطالب في هذه الحلقة');
 
     const shariaEvaluation = this.shariaEvaluationsRepository.create({
       ...rest,
