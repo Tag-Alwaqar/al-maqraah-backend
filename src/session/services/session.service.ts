@@ -84,6 +84,19 @@ export class SessionsService {
         teacher_id: callingUser.teacher.id,
       });
 
+    if (isDefined(sessionsQuery.month)) {
+      const year = sessionsQuery.month.split('-')[0];
+      const month = sessionsQuery.month.split('-')[1];
+
+      query.andWhere('EXTRACT(YEAR FROM session.created_at) = :year', {
+        year,
+      });
+
+      query.andWhere('EXTRACT(MONTH FROM session.created_at) = :month', {
+        month,
+      });
+    }
+
     query.orderBy('session.created_at', 'DESC');
 
     return this.paginationService.paginate({
@@ -144,16 +157,18 @@ export class SessionsService {
       teacher_id: queryData.teacher_id,
     });
 
-    const year = queryData.month.split('-')[0];
-    const month = queryData.month.split('-')[1];
+    if (isDefined(queryData.month)) {
+      const year = queryData.month.split('-')[0];
+      const month = queryData.month.split('-')[1];
 
-    query.andWhere('EXTRACT(YEAR FROM session.created_at) = :year', {
-      year,
-    });
+      query.andWhere('EXTRACT(YEAR FROM session.created_at) = :year', {
+        year,
+      });
 
-    query.andWhere('EXTRACT(MONTH FROM session.created_at) = :month', {
-      month,
-    });
+      query.andWhere('EXTRACT(MONTH FROM session.created_at) = :month', {
+        month,
+      });
+    }
 
     if (isDefined(queryData.group_id)) {
       query.andWhere('group_id = :group_id', {

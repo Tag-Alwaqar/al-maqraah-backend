@@ -18,7 +18,7 @@ import { SessionDto } from '../dto/session.dto';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDto } from '../dto/update-session.dto';
 import { TeacherAuth } from '@user/authentication/decorators/teacher-auth.decorator';
-import { SessionsStatsQueryDto } from '../dto/sessions-stats-query.dto';
+import { SessionsStatsQueryDto } from '@session/dto/sessions-stats-query.dto';
 
 @ApiTags('Session')
 @Controller('sessions')

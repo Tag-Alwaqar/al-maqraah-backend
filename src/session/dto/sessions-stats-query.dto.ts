@@ -13,7 +13,7 @@ export class SessionsStatsQueryDto {
   @Transform(({ value }) => parseInt(value, 10))
   teacher_id: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @Matches(/^\d{4}-\d{2}$/, {
     message: 'Month must be in the format of year-month',
