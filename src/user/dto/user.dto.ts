@@ -1,3 +1,4 @@
+import { GroupDto } from '@group/dto/group.dto';
 import { Admin } from '@user/entities/admin.entity';
 import { Student } from '@user/entities/student.entity';
 import { Teacher } from '@user/entities/teacher.entity';
@@ -31,12 +32,15 @@ export class StudentDto {
   current_surah: number;
   current_ayah?: number;
   user?: UserDto;
+  groups?: GroupDto[];
   constructor(student: Student) {
     this.id = student.id;
     this.current_surah = student.current_surah;
     if (student.current_ayah) this.current_ayah = student.current_ayah;
     if (student.user) this.user = new UserDto(student.user);
     else this.user_id = student.user_id;
+    if (student.groups)
+      this.groups = student.groups.map((group) => new GroupDto(group));
   }
 }
 

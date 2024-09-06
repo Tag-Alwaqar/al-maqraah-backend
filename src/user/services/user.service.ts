@@ -154,7 +154,7 @@ export class UsersService {
   async findOneById(id: number): Promise<User | null> {
     return await this.usersRepository.findOne({
       where: { id },
-      relations: ['admin', 'teacher', 'student'],
+      relations: ['admin', 'teacher', 'student', 'student.groups'],
     });
   }
 
