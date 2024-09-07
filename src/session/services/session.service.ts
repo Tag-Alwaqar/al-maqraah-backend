@@ -176,7 +176,11 @@ export class SessionsService {
       });
     }
 
-    return await query.getRawOne();
+    const result = await query.getRawOne();
+
+    return {
+      total_duration: +result.total_duration,
+    };
   }
 
   async update(session: Session) {
