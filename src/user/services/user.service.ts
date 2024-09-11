@@ -73,17 +73,21 @@ export class UsersService {
       } else query.andWhere(`user.${usersQuery.type} IS NOT NULL`);
     }
 
-    if (usersQuery.pending === true) {
-      query.andWhere('user.approved = false');
-    } else if (usersQuery.pending === false) {
-      query.andWhere('user.approved = true');
-    }
+    if (isDefined(usersQuery.pending))
+      query.andWhere('user.approved = :approved', {
+        approved: !usersQuery.pending,
+      });
 
     if (usersQuery.forgot_pass === true) {
       query.andWhere('user.forget_pass_token IS NOT NULL');
     } else if (usersQuery.forgot_pass === false) {
       query.andWhere('user.forget_pass_token IS NULL');
     }
+
+    if (isDefined(usersQuery.gender))
+      query.andWhere('user.gender = :gender', {
+        gender: usersQuery.gender,
+      });
 
     if (isDefined(usersQuery.search)) {
       query.andWhere('user.name LIKE :search', {
