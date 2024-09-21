@@ -155,6 +155,22 @@ export class ShariaEvaluationsService {
         session_id: evaluationsQuery.session_id,
       });
 
+    if (isDefined(evaluationsQuery.month)) {
+      const year = evaluationsQuery.month.split('-')[0];
+      const month = evaluationsQuery.month.split('-')[1];
+
+      query.andWhere('EXTRACT(YEAR FROM shariaEvaluation.created_at) = :year', {
+        year,
+      });
+
+      query.andWhere(
+        'EXTRACT(MONTH FROM shariaEvaluation.created_at) = :month',
+        {
+          month,
+        },
+      );
+    }
+
     if (callingUser.teacher)
       query.andWhere('group.gender = :gender', {
         gender: callingUser.gender,

@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class ExamEvaluationsQueryDto {
   @IsOptional()
@@ -18,4 +24,11 @@ export class ExamEvaluationsQueryDto {
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10))
   student_id?: number;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{4}-\d{2}$/, {
+    message: 'Month must be in the format of year-month',
+  })
+  month?: string;
 }

@@ -87,6 +87,19 @@ export class ExamEvaluationsService {
         student_id: examEvaluationsQuery.student_id,
       });
 
+    if (isDefined(examEvaluationsQuery.month)) {
+      const year = examEvaluationsQuery.month.split('-')[0];
+      const month = examEvaluationsQuery.month.split('-')[1];
+
+      query.andWhere('EXTRACT(YEAR FROM examEvaluation.created_at) = :year', {
+        year,
+      });
+
+      query.andWhere('EXTRACT(MONTH FROM examEvaluation.created_at) = :month', {
+        month,
+      });
+    }
+
     if (callingUser.teacher)
       query.andWhere('group.gender = :gender', {
         gender: callingUser.gender,
