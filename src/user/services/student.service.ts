@@ -83,7 +83,7 @@ export class StudentsService {
       });
 
     if (isDefined(studentsQueryDto.search))
-      query.andWhere('user.name LIKE :search', {
+      query.andWhere('user.name ILIKE :search', {
         search: `%${studentsQueryDto.search}%`,
       });
 
@@ -120,7 +120,7 @@ export class StudentsService {
       });
 
     if (isDefined(queryDto.search))
-      query.andWhere('user.name LIKE :search', {
+      query.andWhere('user.name ILIKE :search', {
         search: `%${queryDto.search}%`,
       });
 
@@ -167,7 +167,7 @@ export class StudentsService {
       });
 
     if (isDefined(queryDto.search))
-      query.andWhere('user.name LIKE :search', {
+      query.andWhere('user.name ILIKE :search', {
         search: `%${queryDto.search}%`,
       });
 

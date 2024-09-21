@@ -91,7 +91,7 @@ export class FeesService {
 
     if (isDefined(feesQuery.search))
       query.andWhere(
-        '(studentUser.name LIKE :search OR group.name LIKE :search)',
+        '(studentUser.name ILIKE :search OR group.name ILIKE :search)',
         {
           search: `%${feesQuery.search}%`,
         },

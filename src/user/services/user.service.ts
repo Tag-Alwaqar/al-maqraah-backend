@@ -90,7 +90,7 @@ export class UsersService {
       });
 
     if (isDefined(usersQuery.search)) {
-      query.andWhere('user.name LIKE :search', {
+      query.andWhere('user.name ILIKE :search', {
         search: `%${usersQuery.search}%`,
       });
     }

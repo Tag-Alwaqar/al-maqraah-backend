@@ -13,6 +13,7 @@ import { GroupModule } from '@group/group.module';
 import { EvaluationModule } from '@evaluation/evaluation.module';
 import { FeesModule } from '@fees/fees.module';
 import { SessionModule } from './session/session.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SessionModule } from './session/session.module';
     EvaluationModule,
     FeesModule,
     SessionModule,
+    PostModule,
   ],
   controllers: [],
   providers: [

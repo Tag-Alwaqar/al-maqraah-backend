@@ -61,7 +61,7 @@ export class GroupsService {
       .leftJoinAndSelect('group.admin', 'admin');
 
     if (isDefined(groupsQuery.search))
-      query.andWhere('group.name LIKE :search', {
+      query.andWhere('group.name ILIKE :search', {
         search: `%${groupsQuery.search}%`,
       });
 

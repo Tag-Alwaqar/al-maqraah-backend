@@ -73,7 +73,7 @@ export class ExamEvaluationsService {
       .leftJoinAndSelect('student.user', 'studentUser');
 
     if (isDefined(examEvaluationsQuery.search))
-      query.andWhere('examEvaluation.name LIKE :search', {
+      query.andWhere('examEvaluation.name ILIKE :search', {
         search: `%${examEvaluationsQuery.search}%`,
       });
 
