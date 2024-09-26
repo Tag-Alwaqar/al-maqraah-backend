@@ -1,7 +1,10 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthService } from '@user/authentication/auth.service';
+import { AdminAuth } from '@user/authentication/decorators/admin-auth.decorator';
 import { UserAuth } from '@user/authentication/decorators/user-auth.decorator';
 import { User } from '@user/authentication/decorators/user.decorator';
+import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UserInfo } from '@user/authentication/dtos/user-info.dto';
 import { UpdateMeDto } from '@user/dto/update-me.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
@@ -11,7 +14,17 @@ import { UsersService } from '@user/services/user.service';
 @ApiTags('User')
 @Controller('users')
 export class UserController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
+
+  @Post()
+  @AdminAuth()
+  async create(@Body() dto: SignupDto) {
+    const user = await this.authService.signup(dto, true);
+    return { user: new UserDto(user) };
+  }
 
   @Get('me')
   @UserAuth()

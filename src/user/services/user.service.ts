@@ -25,8 +25,8 @@ export class UsersService {
     private readonly paginationService: PaginationService,
   ) {}
 
-  async signup(data: SignupDto) {
-    let code: string;
+  async signup(data: SignupDto, approved = false) {
+    let code: string = null;
     while (true) {
       code = generateRandomCode();
       const user = await this.usersRepository.findOne({ where: { code } });
@@ -41,7 +41,7 @@ export class UsersService {
       phone: data.phone,
       gender: data.gender,
       born_at: data.born_at,
-      approved: false,
+      approved,
     });
     return await this.usersRepository.save(user);
   }

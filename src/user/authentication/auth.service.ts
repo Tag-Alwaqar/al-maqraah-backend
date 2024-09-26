@@ -25,8 +25,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(signupDto: SignupDto) {
-    const user = await this.usersService.signup(signupDto);
+  async signup(signupDto: SignupDto, approved = false) {
+    const user = await this.usersService.signup(signupDto, approved);
 
     switch (signupDto.user_type) {
       case 'student':
