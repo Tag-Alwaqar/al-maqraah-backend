@@ -93,4 +93,7 @@ export abstract class Evaluation extends SoftDeletableEntity {
 
   @Column({ type: 'bool' })
   ethics_grade: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  notes: string;
 }

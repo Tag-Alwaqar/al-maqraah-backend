@@ -1,4 +1,10 @@
-import { IsBoolean, IsInt, IsNotEmpty } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateEvaluationDto {
   @IsNotEmpty()
@@ -16,4 +22,9 @@ export class CreateEvaluationDto {
   @IsNotEmpty()
   @IsBoolean()
   ethics_grade: boolean;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  notes?: string;
 }

@@ -46,7 +46,8 @@ export class ShariaEvaluationsService {
 
     const session = await this.sessionsService.findOneById(data.session_id);
 
-    if (!session) throw new NotFoundException('هذه الحلقة غير موجودة');
+    if (!session || session.group_id !== group.id)
+      throw new NotFoundException('هذه الحلقة غير موجودة');
 
     if (teacherUser.gender !== group.gender)
       throw new ForbiddenException('لا يمكنك إضافة تقييم لهذه المجموعة');
@@ -87,7 +88,7 @@ export class ShariaEvaluationsService {
     const shariaEvaluation = await this.findOneById(id);
 
     if (!shariaEvaluation) {
-      throw new NotFoundException('هذا التقييم غير موجودة');
+      throw new NotFoundException('هذا التقييم غير موجود');
     }
 
     const callingUser = await this.usersService.findOneById(callingUserId);
