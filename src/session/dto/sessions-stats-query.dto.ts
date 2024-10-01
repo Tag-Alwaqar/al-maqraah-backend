@@ -1,5 +1,7 @@
 import { Transform } from 'class-transformer';
 import {
+  IsDate,
+  IsISO8601,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -25,4 +27,14 @@ export class SessionsStatsQueryDto {
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10))
   group_id?: number;
+
+  @IsOptional()
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  from?: Date;
+
+  @IsOptional()
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  to?: Date;
 }

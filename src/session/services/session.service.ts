@@ -176,6 +176,18 @@ export class SessionsService {
       });
     }
 
+    if (isDefined(queryData.from)) {
+      query.andWhere('session.created_at >= :from', {
+        from: queryData.from,
+      });
+    }
+
+    if (isDefined(queryData.to)) {
+      query.andWhere('session.created_at <= :to', {
+        to: queryData.to,
+      });
+    }
+
     const result = await query.getRawOne();
 
     return {
