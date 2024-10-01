@@ -13,6 +13,9 @@ import { ExamEvaluationController } from './controllers/exam-evaluation.controll
 import { ShariaEvaluationsService } from './services/sharia-evaluation.service';
 import { ExamEvaluationsService } from './services/exam-evaluation.service';
 import { SessionModule } from '@session/session.module';
+import { QuraanExamEvaluation } from './entities/quraan-exam-evaluation.entity';
+import { QuraanExamEvaluationController } from './controllers/quraan-exam-evaluation.controller';
+import { QuraanExamEvaluationsService } from './services/quraan-exam-evaluation.service';
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { SessionModule } from '@session/session.module';
       QuraanEvaluation,
       ShariaEvaluation,
       ExamEvaluation,
+      QuraanExamEvaluation,
     ]),
     CommonModule,
     SessionModule,
@@ -30,16 +34,19 @@ import { SessionModule } from '@session/session.module';
     QuraanEvaluationController,
     ShariaEvaluationController,
     ExamEvaluationController,
+    QuraanExamEvaluationController,
   ],
   providers: [
     QuraanEvaluationsService,
     ShariaEvaluationsService,
     ExamEvaluationsService,
+    QuraanExamEvaluationsService,
   ],
   exports: [
     QuraanEvaluationsService,
     ShariaEvaluationsService,
     ExamEvaluationsService,
+    QuraanExamEvaluationsService,
   ],
 })
 export class EvaluationModule {}
