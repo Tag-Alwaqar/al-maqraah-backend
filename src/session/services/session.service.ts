@@ -16,6 +16,10 @@ import { SessionsQueryDto } from '../dto/sessions-query.dto';
 import { SessionDto } from '../dto/session.dto';
 import { UpdateSessionDto } from '../dto/update-session.dto';
 import { SessionsStatsQueryDto } from '../dto/sessions-stats-query.dto';
+import { SessionsGroupStatsQueryDto } from '@session/dto/sessions-group-stats-query.dto';
+import { QuraanEvaluation } from '@evaluation/entities/quraan-evaluation.entity';
+import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity';
+import { Student } from '@user/entities/student.entity';
 
 @Injectable()
 export class SessionsService {
@@ -193,6 +197,66 @@ export class SessionsService {
     return {
       total_duration: +result.total_duration,
     };
+  }
+
+  async groupStats(
+    groupId: number,
+    callingUserId: number,
+    queryData: SessionsGroupStatsQueryDto,
+  ) {
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    const query = this.sessionsRepository
+      .createQueryBuilder('session')
+      .leftJoin(QuraanEvaluation, 'quraan', 'quraan.session_id = session.id')
+      .leftJoin(ShariaEvaluation, 'sharia', 'sharia.session_id = session.id')
+      .innerJoin(
+        Student,
+        'student',
+        'student.id = COALESCE(quraan.student_id, sharia.student_id)',
+      )
+      .select('student')
+      .addSelect('COUNT(session.id)', 'sessions_count')
+      .where('session.group_id = :groupId', { groupId })
+      .groupBy('student.id');
+
+    if (isDefined(queryData.month)) {
+      const year = queryData.month.split('-')[0];
+      const month = queryData.month.split('-')[1];
+
+      query.andWhere('EXTRACT(YEAR FROM session.created_at) = :year', {
+        year,
+      });
+
+      query.andWhere('EXTRACT(MONTH FROM session.created_at) = :month', {
+        month,
+      });
+    }
+
+    if (isDefined(queryData.from)) {
+      query.andWhere('session.created_at >= :from', {
+        from: queryData.from,
+      });
+    }
+
+    if (isDefined(queryData.to)) {
+      query.andWhere('session.created_at <= :to', {
+        to: queryData.to,
+      });
+    }
+
+    const result = await query.getRawMany();
+
+    return result.map((student) => {
+      return {
+        student_id: student.student_id,
+        sessions_count: +student.sessions_count,
+      };
+    });
   }
 
   async update(session: Session) {
