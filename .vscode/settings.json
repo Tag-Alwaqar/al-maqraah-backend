@@ -1,3 +1,9 @@
 {
-  "conventionalCommits.scopes": ["evaluation", "user", "session", "admin"]
+  "conventionalCommits.scopes": [
+    "evaluation",
+    "user",
+    "session",
+    "admin",
+    "group"
+  ]
 }
