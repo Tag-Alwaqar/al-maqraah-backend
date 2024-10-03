@@ -1,4 +1,5 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
+import { CreateGroupAppointmentDto } from '@group/dto/create-group-appointment.dto';
 import { CreateGroupDto } from '@group/dto/create-group.dto';
 import { GroupDto } from '@group/dto/group.dto';
 import { GroupsQueryDto } from '@group/dto/groups-query.dto';
@@ -58,6 +59,31 @@ export class GroupController {
   @AdminAuth()
   async update(@Param('id') id: string, @Body() data: UpdateGroupDto) {
     const group = await this.groupsService.updateGroup(+id, data);
+
+    return new GroupDto(group);
+  }
+
+  @Post(':id/appointments')
+  @AdminAuth()
+  async createAppointment(
+    @Body() data: CreateGroupAppointmentDto,
+    @Param('id') id: string,
+  ) {
+    const group = await this.groupsService.addGroupAppointment(+id, data);
+
+    return new GroupDto(group);
+  }
+
+  @Delete(':id/appointments/:appointmentId')
+  @AdminAuth()
+  async deleteAppointment(
+    @Param('id') id: string,
+    @Param('appointmentId') appointmentId: string,
+  ) {
+    const group = await this.groupsService.removeGroupAppointment(
+      +id,
+      +appointmentId,
+    );
 
     return new GroupDto(group);
   }

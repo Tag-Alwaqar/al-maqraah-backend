@@ -8,11 +8,12 @@ import { GroupsService } from './services/group.service';
 import { Student } from '@user/entities/student.entity';
 import { User } from '@user/entities/user.entity';
 import { Admin } from '@user/entities/admin.entity';
+import { GroupAppointment } from './entities/group-appointment.entity';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
-    TypeOrmModule.forFeature([Group, Student, Admin, User]),
+    TypeOrmModule.forFeature([Group, GroupAppointment, Student, Admin, User]),
     CommonModule,
   ],
   controllers: [GroupController],

@@ -18,12 +18,16 @@ import { GroupDto } from '@group/dto/group.dto';
 import { UpdateGroupDto } from '@group/dto/update-group.dto';
 import { UsersService } from '@user/services/user.service';
 import { StudentsService } from '@user/services/student.service';
+import { CreateGroupAppointmentDto } from '@group/dto/create-group-appointment.dto';
+import { GroupAppointment } from '@group/entities/group-appointment.entity';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectRepository(Group)
     private readonly groupsRepository: Repository<Group>,
+    @InjectRepository(GroupAppointment)
+    private readonly groupAppointmentsRepository: Repository<GroupAppointment>,
     private readonly paginationService: PaginationService,
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => StudentsService))
@@ -43,6 +47,48 @@ export class GroupsService {
       admin_id: adminId,
     });
     return await this.groupsRepository.save(group);
+  }
+
+  async addGroupAppointment(groupId: number, dto: CreateGroupAppointmentDto) {
+    const { weekdays, ...rest } = dto;
+
+    const group = await this.findOneById(groupId);
+
+    if (!group) {
+      throw new NotFoundException('هذه المجموعة غير موجودة');
+    }
+
+    for (const weekday of weekdays) {
+      const appointment = this.groupAppointmentsRepository.create({
+        ...rest,
+        weekday,
+        group,
+      });
+
+      await this.groupAppointmentsRepository.save(appointment);
+    }
+
+    return await this.findOneById(groupId);
+  }
+
+  async removeGroupAppointment(groupId: number, appointmentId: number) {
+    const group = await this.findOneById(groupId);
+
+    if (!group) {
+      throw new NotFoundException('هذه المجموعة غير موجودة');
+    }
+
+    const appointment = await this.groupAppointmentsRepository.findOne({
+      where: { id: appointmentId, group_id: groupId },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('هذا الموعد غير موجود');
+    }
+
+    await this.groupAppointmentsRepository.delete(appointmentId);
+
+    return await this.findOneById(groupId);
   }
 
   async findAll(
