@@ -121,7 +121,9 @@ export class ExamEvaluationsService {
       });
     }
 
-    query.orderBy('examEvaluation.created_at', 'DESC');
+    query
+      .orderBy('examEvaluation.name', 'ASC')
+      .addOrderBy('examEvaluation.created_at', 'DESC');
 
     return this.paginationService.paginate({
       pageOptionsDto,

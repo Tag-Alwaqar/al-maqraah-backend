@@ -95,7 +95,7 @@ export class UsersService {
       });
     }
 
-    query.orderBy('user.name', 'ASC');
+    query.orderBy('user.name', 'ASC').addOrderBy('user.created_at', 'DESC');
 
     return this.paginationService.paginate({
       pageOptionsDto,

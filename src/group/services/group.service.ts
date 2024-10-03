@@ -136,6 +136,8 @@ export class GroupsService {
       });
     }
 
+    query.orderBy('group.name', 'ASC').addOrderBy('group.created_at', 'DESC');
+
     return this.paginationService.paginate({
       pageOptionsDto,
       query,

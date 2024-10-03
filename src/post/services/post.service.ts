@@ -41,14 +41,12 @@ export class PostsService {
       );
     }
 
-    console.log('post.type', postsQuery.type);
-
     if (isDefined(postsQuery.type))
       query.andWhere('post.type = :type', {
         type: postsQuery.type,
       });
 
-    query.orderBy('post.created_at', 'DESC');
+    query.orderBy('post.title', 'ASC').addOrderBy('post.created_at', 'DESC');
 
     return this.paginationService.paginate({
       pageOptionsDto,

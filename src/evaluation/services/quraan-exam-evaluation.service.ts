@@ -129,7 +129,9 @@ export class QuraanExamEvaluationsService {
       });
     }
 
-    query.orderBy('quraanExamEvaluation.created_at', 'DESC');
+    query
+      .orderBy('quraanExamEvaluation.name', 'ASC')
+      .addOrderBy('quraanExamEvaluation.created_at', 'DESC');
 
     return this.paginationService.paginate({
       pageOptionsDto,
