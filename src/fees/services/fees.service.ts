@@ -16,6 +16,7 @@ import { User } from '@user/entities/user.entity';
 import { FeesQueryDto } from '@fees/dto/fees-query.dto';
 import { FeesDto } from '@fees/dto/fees.dto';
 import { UpdateFeesDto } from '@fees/dto/update-fees.dto';
+import { AdminsService } from '@user/services/admin.service';
 
 @Injectable()
 export class FeesService {
@@ -25,9 +26,13 @@ export class FeesService {
     private readonly paginationService: PaginationService,
     private readonly groupsService: GroupsService,
     private readonly studentsService: StudentsService,
+    private readonly adminsService: AdminsService,
   ) {}
 
   async create(data: CreateFeesDto, adminUser: User) {
+    if (!adminUser.admin.is_super)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
     const { student_id, group_id, ...rest } = data;
 
     const student = await this.studentsService.findOneById(data.student_id);
@@ -55,7 +60,18 @@ export class FeesService {
     return await this.feesRepository.save(fees);
   }
 
-  async findAll(pageOptionsDto: PageOptionsDto, feesQuery: FeesQueryDto) {
+  async findAll(
+    pageOptionsDto: PageOptionsDto,
+    feesQuery: FeesQueryDto,
+    callingUserId: number,
+  ) {
+    const currentAdmin = await this.adminsService.findOne({
+      user_id: callingUserId,
+    });
+
+    if (!currentAdmin.is_super)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
     const query = this.feesRepository
       .createQueryBuilder('fees')
       .leftJoinAndSelect('fees.admin', 'admin')
@@ -118,7 +134,14 @@ export class FeesService {
     });
   }
 
-  async findById(id: number): Promise<Fees> {
+  async findById(id: number, callingUserId: number) {
+    const currentAdmin = await this.adminsService.findOne({
+      user_id: callingUserId,
+    });
+
+    if (!currentAdmin.is_super)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
     const fees = await this.findOneById(id);
 
     if (!fees) {
@@ -132,7 +155,14 @@ export class FeesService {
     return await this.feesRepository.save(fees);
   }
 
-  async updateFees(id: number, data: UpdateFeesDto) {
+  async updateFees(id: number, data: UpdateFeesDto, callingUserId: number) {
+    const currentAdmin = await this.adminsService.findOne({
+      user_id: callingUserId,
+    });
+
+    if (!currentAdmin.is_super)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
     const fees = await this.findOneById(id);
 
     if (!fees) {
@@ -187,7 +217,14 @@ export class FeesService {
     return await this.update(fees);
   }
 
-  async delete(id: number) {
+  async delete(id: number, callingUserId: number) {
+    const currentAdmin = await this.adminsService.findOne({
+      user_id: callingUserId,
+    });
+
+    if (!currentAdmin.is_super)
+      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+
     const fees = await this.feesRepository.findOne({
       where: { id },
     });

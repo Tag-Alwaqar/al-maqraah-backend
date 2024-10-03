@@ -15,6 +15,7 @@ import { UsersService } from '@user/services/user.service';
 import { SignupDto } from './dtos/signup.dto';
 import { StudentsService } from '@user/services/student.service';
 import { TeachersService } from '@user/services/teacher.service';
+import { AdminsService } from '@user/services/admin.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly studentsService: StudentsService,
     private readonly teachersService: TeachersService,
+    private readonly adminsService: AdminsService,
     private readonly jwtService: JwtService,
   ) {}
 

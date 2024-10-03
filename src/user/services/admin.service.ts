@@ -5,13 +5,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from '@user/entities/admin.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { StudentsService } from './student.service';
 import { GroupsService } from '@group/services/group.service';
 import {
   AssignStudentToGroupDto,
   RemoveStudentFromGroupDto,
 } from '@user/dto/assign-student-to-group.dto';
+import { UsersService } from './user.service';
+import { CreateAdminDto } from '@user/dto/create-admin.dto';
 
 @Injectable()
 export class AdminsService {
@@ -20,7 +22,34 @@ export class AdminsService {
     private readonly adminsRepository: Repository<Admin>,
     private readonly studentsService: StudentsService,
     private readonly groupsService: GroupsService,
+    private readonly usersService: UsersService,
   ) {}
+
+  async findOne(options: FindOptionsWhere<Admin>): Promise<Admin | null> {
+    return await this.adminsRepository.findOne({
+      where: options,
+    });
+  }
+
+  async create(dto: CreateAdminDto, callingUserId: number) {
+    const currentAdmin = await this.adminsRepository.findOne({
+      where: { user_id: callingUserId },
+    });
+
+    if (!currentAdmin.is_super)
+      throw new ForbiddenException('لا يمكنك إنشاء حساب مشرف');
+
+    const user = await this.usersService.signup(dto, true);
+
+    const admin = this.adminsRepository.create({
+      user_id: user.id,
+      is_super: dto.is_super,
+    });
+    await this.adminsRepository.save(admin);
+
+    user.admin = admin;
+    await this.usersService.update(user);
+  }
 
   async findOneById(id: number): Promise<Admin | null> {
     return await this.adminsRepository.findOne({

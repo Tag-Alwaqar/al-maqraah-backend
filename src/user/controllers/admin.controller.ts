@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -15,6 +16,7 @@ import {
   AssignStudentToGroupDto,
   RemoveStudentFromGroupDto,
 } from '@user/dto/assign-student-to-group.dto';
+import { CreateAdminDto } from '@user/dto/create-admin.dto';
 import { UpdateStudentDto } from '@user/dto/update-student.dto';
 import { UpdateUserDto } from '@user/dto/update-user.dto';
 import { UsersQueryDto } from '@user/dto/users-query.dto';
@@ -30,6 +32,17 @@ export class AdminController {
     private readonly usersService: UsersService,
     private readonly studentsService: StudentsService,
   ) {}
+
+  @AdminAuth()
+  @Post()
+  async create(
+    @Body() data: CreateAdminDto,
+    @User('id') callingUserId: number,
+  ) {
+    await this.adminsService.create(data, callingUserId);
+
+    return { message: 'تم إنشاء الحساب بنجاح' };
+  }
 
   @Patch('assign-student-to-group')
   @AdminAuth()

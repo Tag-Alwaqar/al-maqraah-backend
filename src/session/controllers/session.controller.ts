@@ -20,6 +20,7 @@ import { UpdateSessionDto } from '../dto/update-session.dto';
 import { TeacherAuth } from '@user/authentication/decorators/teacher-auth.decorator';
 import { SessionsStatsQueryDto } from '@session/dto/sessions-stats-query.dto';
 import { SessionsGroupStatsQueryDto } from '@session/dto/sessions-group-stats-query.dto';
+import { AdminAuth } from '@user/authentication/decorators/admin-auth.decorator';
 
 @ApiTags('Session')
 @Controller('sessions')
@@ -41,7 +42,7 @@ export class SessionController {
   }
 
   @Get('stats')
-  @UserAuth()
+  @AdminAuth()
   async stats(
     @Query() sessionsStatsQueryDto: SessionsStatsQueryDto,
     @User('id') callingUserId: number,

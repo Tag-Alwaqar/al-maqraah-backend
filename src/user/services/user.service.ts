@@ -25,7 +25,7 @@ export class UsersService {
     private readonly paginationService: PaginationService,
   ) {}
 
-  async signup(data: SignupDto, approved = false) {
+  async signup(data: Omit<SignupDto, 'user_type'>, approved = false) {
     let code: string = null;
     while (true) {
       code = generateRandomCode();

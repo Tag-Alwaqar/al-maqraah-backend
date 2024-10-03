@@ -10,7 +10,7 @@ import { SignupDto } from '@user/authentication/dtos/signup.dto';
 import { UpdateStudentDto } from '@user/dto/update-student.dto';
 import { Student } from '@user/entities/student.entity';
 import { isDefined } from 'class-validator';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { UsersService } from './user.service';
 import { PaginationService } from '@common/pagination.service';
 import { ReversedStudentDto } from '@user/dto/user.dto';
@@ -37,6 +37,13 @@ export class StudentsService {
       current_ayah: data.current_ayah,
     });
     return await this.studentsRepository.save(student);
+  }
+
+  async findOne(options: FindOptionsWhere<Student>): Promise<Student | null> {
+    return await this.studentsRepository.findOne({
+      where: options,
+      relations: ['user', 'groups'],
+    });
   }
 
   async getGroupStudents(

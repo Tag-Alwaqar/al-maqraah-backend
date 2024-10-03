@@ -32,14 +32,19 @@ export class FeesController {
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
     @Query() feesQueryDto: FeesQueryDto,
+    @User('id') callingUserId: number,
   ) {
-    return await this.feesService.findAll(pageOptionsDto, feesQueryDto);
+    return await this.feesService.findAll(
+      pageOptionsDto,
+      feesQueryDto,
+      callingUserId,
+    );
   }
 
   @Get(':id')
   @AdminAuth()
-  async findById(@Param('id') id: string) {
-    const fees = await this.feesService.findById(+id);
+  async findById(@Param('id') id: string, @User('id') callingUserId: number) {
+    const fees = await this.feesService.findById(+id, callingUserId);
 
     return new FeesDto(fees);
   }
@@ -56,16 +61,20 @@ export class FeesController {
 
   @Patch(':id')
   @AdminAuth()
-  async update(@Param('id') id: string, @Body() data: UpdateFeesDto) {
-    const fees = await this.feesService.updateFees(+id, data);
+  async update(
+    @Param('id') id: string,
+    @Body() data: UpdateFeesDto,
+    @User('id') callingUserId: number,
+  ) {
+    const fees = await this.feesService.updateFees(+id, data, callingUserId);
 
     return new FeesDto(fees);
   }
 
   @Delete(':id')
   @AdminAuth()
-  async delete(@Param('id') id: string) {
-    await this.feesService.delete(+id);
+  async delete(@Param('id') id: string, @User('id') callingUserId: number) {
+    await this.feesService.delete(+id, callingUserId);
 
     return { message: 'تم حذف التقييم بنجاح' };
   }

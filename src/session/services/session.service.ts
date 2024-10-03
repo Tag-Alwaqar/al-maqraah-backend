@@ -20,6 +20,8 @@ import { SessionsGroupStatsQueryDto } from '@session/dto/sessions-group-stats-qu
 import { QuraanEvaluation } from '@evaluation/entities/quraan-evaluation.entity';
 import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity';
 import { Student } from '@user/entities/student.entity';
+import { StudentsService } from '@user/services/student.service';
+import { AdminsService } from '@user/services/admin.service';
 
 @Injectable()
 export class SessionsService {
@@ -29,6 +31,8 @@ export class SessionsService {
     private readonly paginationService: PaginationService,
     private readonly groupsService: GroupsService,
     private readonly usersService: UsersService,
+    private readonly studentsService: StudentsService,
+    private readonly adminsService: AdminsService,
   ) {}
 
   async create(data: CreateSessionDto, teacherUserId: number) {
@@ -141,16 +145,11 @@ export class SessionsService {
   }
 
   async stats(callingUserId: number, queryData: SessionsStatsQueryDto) {
-    const callingUser = await this.usersService.findOneById(callingUserId);
+    const currentAdmin = await this.adminsService.findOne({
+      user_id: callingUserId,
+    });
 
-    if (!callingUser) {
-      throw new NotFoundException('هذا المستخدم غير موجود');
-    }
-
-    if (callingUser.student)
-      throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
-
-    if (callingUser.teacher && callingUser.teacher.id !== queryData.teacher_id)
+    if (!currentAdmin.is_super)
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
 
     const query = this.sessionsRepository.createQueryBuilder('session');
@@ -208,6 +207,16 @@ export class SessionsService {
 
     if (!callingUser) {
       throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    if (callingUser.student) {
+      const student = await this.studentsService.findOne({
+        user_id: callingUserId,
+      });
+
+      if (!student.groups.find((group) => group.id === groupId)) {
+        throw new ForbiddenException('لا يمكنك الوصول إلى هذه المجموعة');
+      }
     }
 
     const query = this.sessionsRepository
