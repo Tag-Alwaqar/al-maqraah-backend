@@ -15,9 +15,17 @@ export class CreateQuraanExamEvaluationDto {
 
   @IsNotEmpty()
   @IsInt()
-  memorizing: number;
+  memorizing_grade: number;
 
   @IsNotEmpty()
   @IsInt()
-  tajweed: number;
+  max_memorizing_grade: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  tajweed_grade: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  max_tajweed_grade: number;
 }

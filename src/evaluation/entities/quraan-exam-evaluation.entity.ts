@@ -29,8 +29,14 @@ export class QuraanExamEvaluation extends SoftDeletableEntity {
   student: Student;
 
   @Column({ type: 'int' })
-  memorizing: number;
+  memorizing_grade: number;
+
+  @Column({ type: 'int', default: 100 })
+  max_memorizing_grade: number;
 
   @Column({ type: 'int' })
-  tajweed: number;
+  tajweed_grade: number;
+
+  @Column({ type: 'int', default: 100 })
+  max_tajweed_grade: number;
 }

@@ -9,8 +9,10 @@ export class QuraanExamEvaluationDto {
   name: string;
   group: GroupDto;
   student: ReversedStudentDto;
-  memorizing: number;
-  tajweed: number;
+  memorizing_grade: number;
+  max_memorizing_grade: number;
+  tajweed_grade: number;
+  max_tajweed_grade: number;
   constructor(quraanExamEvaluation: QuraanExamEvaluation) {
     this.id = quraanExamEvaluation.id;
     this.created_at = quraanExamEvaluation.created_at;
@@ -18,7 +20,9 @@ export class QuraanExamEvaluationDto {
     this.name = quraanExamEvaluation.name;
     this.group = new GroupDto(quraanExamEvaluation.group);
     this.student = new ReversedStudentDto(quraanExamEvaluation.student);
-    this.memorizing = quraanExamEvaluation.memorizing;
-    this.tajweed = quraanExamEvaluation.tajweed;
+    this.memorizing_grade = quraanExamEvaluation.memorizing_grade;
+    this.max_memorizing_grade = quraanExamEvaluation.max_memorizing_grade;
+    this.tajweed_grade = quraanExamEvaluation.tajweed_grade;
+    this.max_tajweed_grade = quraanExamEvaluation.max_tajweed_grade;
   }
 }
