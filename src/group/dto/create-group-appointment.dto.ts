@@ -15,9 +15,9 @@ export class CreateGroupAppointmentDto {
 
   @IsNotEmpty()
   @IsMilitaryTime()
-  startTime: string;
+  start_time: string;
 
   @IsNotEmpty()
   @IsMilitaryTime()
-  endTime: string;
+  end_time: string;
 }

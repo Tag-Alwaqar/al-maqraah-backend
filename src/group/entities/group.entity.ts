@@ -40,7 +40,6 @@ export class Group extends SoftDeletableEntity {
 
   @OneToMany(() => GroupAppointment, (appointment) => appointment.group, {
     nullable: true,
-    eager: true,
   })
   appointments?: GroupAppointment[];
 

@@ -20,6 +20,7 @@ import { UsersService } from '@user/services/user.service';
 import { StudentsService } from '@user/services/student.service';
 import { CreateGroupAppointmentDto } from '@group/dto/create-group-appointment.dto';
 import { GroupAppointment } from '@group/entities/group-appointment.entity';
+import { AppointmentsQueryDto } from '@group/dto/appointments-query.dto';
 
 @Injectable()
 export class GroupsService {
@@ -144,6 +145,23 @@ export class GroupsService {
       mapToDto: async (groups: Group[]) =>
         groups.map((group) => new GroupDto(group)),
     });
+  }
+
+  async getAppointments(queryDto: AppointmentsQueryDto) {
+    const query = this.groupAppointmentsRepository
+      .createQueryBuilder('appointment')
+      .leftJoinAndSelect('appointment.group', 'group');
+
+    if (isDefined(queryDto.type))
+      query.andWhere('group.type = :type', { type: queryDto.type });
+
+    if (isDefined(queryDto.gender))
+      query.andWhere('group.gender = :gender', { gender: queryDto.gender });
+
+    if (isDefined(queryDto.group_id))
+      query.andWhere('group.id = :group_id', { group_id: queryDto.group_id });
+
+    return await query.getMany();
   }
 
   async findOneById(id: number): Promise<Group | null> {

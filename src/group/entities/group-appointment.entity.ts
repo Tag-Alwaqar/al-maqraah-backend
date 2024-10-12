@@ -16,16 +16,17 @@ export class GroupAppointment extends SoftDeletableEntity {
   weekday: WeekdayEnum;
 
   @Column({ type: 'time' })
-  startTime: string;
+  start_time: string;
 
   @Column({ type: 'time' })
-  endTime: string;
+  end_time: string;
 
   @Column({ type: 'int' })
   group_id: number;
 
   @ManyToOne(() => Group, (group) => group.appointments, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   @JoinColumn({ name: 'group_id' })
   group?: Group;

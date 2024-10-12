@@ -1,6 +1,8 @@
 import { PageOptionsDto } from '@common/dtos/page-option.dto';
+import { AppointmentsQueryDto } from '@group/dto/appointments-query.dto';
 import { CreateGroupAppointmentDto } from '@group/dto/create-group-appointment.dto';
 import { CreateGroupDto } from '@group/dto/create-group.dto';
+import { GroupAppointmentDto } from '@group/dto/group-appointment.dto';
 import { GroupDto } from '@group/dto/group.dto';
 import { GroupsQueryDto } from '@group/dto/groups-query.dto';
 import { UpdateGroupDto } from '@group/dto/update-group.dto';
@@ -36,6 +38,16 @@ export class GroupController {
       pageOptionsDto,
       groupsQueryDto,
       callingUserId,
+    );
+  }
+
+  @Get('appointments')
+  @AdminAuth()
+  async getAppointments(@Query() queryDto: AppointmentsQueryDto) {
+    const appointments = await this.groupsService.getAppointments(queryDto);
+
+    return appointments.map(
+      (appointment) => new GroupAppointmentDto(appointment),
     );
   }
 
