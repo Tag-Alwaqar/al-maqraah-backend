@@ -1,4 +1,11 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreateQuraanExamEvaluationDto {
   @IsNotEmpty()
@@ -12,6 +19,25 @@ export class CreateQuraanExamEvaluationDto {
   @IsNotEmpty()
   @IsInt()
   student_id: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @Matches(/^\d{4}-\d{2}$/, {
+    message: 'Month must be in the format of year-month',
+  })
+  month: string;
+
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1)
+  @Max(114)
+  from: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1)
+  @Max(114)
+  to: number;
 
   @IsNotEmpty()
   @IsInt()

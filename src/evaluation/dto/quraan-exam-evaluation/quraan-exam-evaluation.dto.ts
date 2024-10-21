@@ -9,6 +9,9 @@ export class QuraanExamEvaluationDto {
   name: string;
   group: GroupDto;
   student: ReversedStudentDto;
+  month: string;
+  from: number;
+  to: number;
   memorizing_grade: number;
   max_memorizing_grade: number;
   tajweed_grade: number;
@@ -20,6 +23,9 @@ export class QuraanExamEvaluationDto {
     this.name = quraanExamEvaluation.name;
     this.group = new GroupDto(quraanExamEvaluation.group);
     this.student = new ReversedStudentDto(quraanExamEvaluation.student);
+    this.month = quraanExamEvaluation.month;
+    this.from = quraanExamEvaluation.from;
+    this.to = quraanExamEvaluation.to;
     this.memorizing_grade = quraanExamEvaluation.memorizing_grade;
     this.max_memorizing_grade = quraanExamEvaluation.max_memorizing_grade;
     this.tajweed_grade = quraanExamEvaluation.tajweed_grade;

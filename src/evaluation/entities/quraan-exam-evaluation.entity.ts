@@ -28,6 +28,15 @@ export class QuraanExamEvaluation extends SoftDeletableEntity {
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
+  @Column({ type: 'varchar' })
+  month: string; // 2024-08
+
+  @Column({ type: 'int' })
+  from: number;
+
+  @Column({ type: 'int' })
+  to: number;
+
   @Column({ type: 'int' })
   memorizing_grade: number;
 

@@ -75,9 +75,12 @@ export class QuraanExamEvaluationsService {
       .leftJoinAndSelect('student.user', 'studentUser');
 
     if (isDefined(quraanExamEvaluationsQuery.search))
-      query.andWhere('quraanExamEvaluation.name ILIKE :search', {
-        search: `%${quraanExamEvaluationsQuery.search}%`,
-      });
+      query.andWhere(
+        '(quraanExamEvaluation.name ILIKE :search OR quraanExamEvaluation.month ILIKE :search)',
+        {
+          search: `%${quraanExamEvaluationsQuery.search}%`,
+        },
+      );
 
     if (isDefined(quraanExamEvaluationsQuery.group_id))
       query.andWhere('group.id = :group_id', {
@@ -89,24 +92,10 @@ export class QuraanExamEvaluationsService {
         student_id: quraanExamEvaluationsQuery.student_id,
       });
 
-    if (isDefined(quraanExamEvaluationsQuery.month)) {
-      const year = quraanExamEvaluationsQuery.month.split('-')[0];
-      const month = quraanExamEvaluationsQuery.month.split('-')[1];
-
-      query.andWhere(
-        'EXTRACT(YEAR FROM quraanExamEvaluation.created_at) = :year',
-        {
-          year,
-        },
-      );
-
-      query.andWhere(
-        'EXTRACT(MONTH FROM quraanExamEvaluation.created_at) = :month',
-        {
-          month,
-        },
-      );
-    }
+    if (isDefined(quraanExamEvaluationsQuery.month))
+      query.andWhere('quraanExamEvaluation.month = :month', {
+        month: quraanExamEvaluationsQuery.month,
+      });
 
     if (callingUser.teacher)
       query.andWhere('group.gender = :gender', {
@@ -129,9 +118,7 @@ export class QuraanExamEvaluationsService {
       });
     }
 
-    query
-      .orderBy('quraanExamEvaluation.name', 'ASC')
-      .addOrderBy('quraanExamEvaluation.created_at', 'DESC');
+    query.orderBy('quraanExamEvaluation.month', 'DESC');
 
     return this.paginationService.paginate({
       pageOptionsDto,
