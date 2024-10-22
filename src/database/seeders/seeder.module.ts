@@ -17,6 +17,9 @@ import { ShariaEvaluation } from '@evaluation/entities/sharia-evaluation.entity'
 import { ExamEvaluation } from '@evaluation/entities/exam-evaluation.entity';
 import { Fees } from '@fees/entities/fees.entity';
 import { Session } from '@session/entities/session.entity';
+import { QuraanExamEvaluation } from '@evaluation/entities/quraan-exam-evaluation.entity';
+import { GroupAppointment } from '@group/entities/group-appointment.entity';
+import { Post } from '@post/entities/post.entity';
 
 @Module({
   imports: [
@@ -28,11 +31,14 @@ import { Session } from '@session/entities/session.entity';
       Teacher,
       Student,
       Group,
+      GroupAppointment,
       QuraanEvaluation,
+      QuraanExamEvaluation,
       ShariaEvaluation,
       ExamEvaluation,
       Fees,
       Session,
+      Post,
     ]),
   ],
   providers: [

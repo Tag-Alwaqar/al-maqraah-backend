@@ -24,6 +24,7 @@
       "@group/*": ["src/group/*"],
       "@evaluation/*": ["src/evaluation/*"],
       "@fees/*": ["src/fees/*"],
+      "@post/*": ["src/post/*"],
       "@session/*": ["src/session/*"],
       "@seeders/*": ["src/database/seeders/*"]
     }
