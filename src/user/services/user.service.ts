@@ -16,6 +16,8 @@ import { UsersQueryDto } from '../dto/users-query.dto';
 import { isDefined } from 'class-validator';
 import { UserType } from '@user/enums/user-type.enum';
 import { AdminsService } from './admin.service';
+import { DateTime } from 'luxon';
+import { QuraanEvaluation } from '@evaluation/entities/quraan-evaluation.entity';
 
 @Injectable()
 export class UsersService {
@@ -93,6 +95,26 @@ export class UsersService {
       query.andWhere('user.name ILIKE :search', {
         search: `%${usersQuery.search}%`,
       });
+    }
+
+    if (isDefined(usersQuery.committed)) {
+      const oneMonthAgo = DateTime.now().minus({ months: 1 }).toJSDate();
+
+      query.andWhere(
+        (qb) => {
+          const subquery = qb
+            .subQuery()
+            .select('MAX(qe.created_at)', 'latest')
+            .from(QuraanEvaluation, 'qe')
+            .where('qe.student_id = student.id')
+            .getQuery();
+
+          return usersQuery.committed
+            ? `(${subquery}) > :oneMonthAgo`
+            : `(${subquery}) <= :oneMonthAgo`;
+        },
+        { oneMonthAgo },
+      );
     }
 
     query.orderBy('user.name', 'ASC').addOrderBy('user.created_at', 'DESC');
