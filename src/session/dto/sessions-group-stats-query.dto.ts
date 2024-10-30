@@ -15,7 +15,11 @@ export class SessionsGroupStatsQueryDto {
   from?: Date;
 
   @IsOptional()
-  @Transform(({ value }) => new Date(value))
+  @Transform(({ value }) => {
+    const date = new Date(value);
+    date.setHours(23, 59, 59, 999);
+    return date;
+  })
   @IsDate()
   to?: Date;
 }
