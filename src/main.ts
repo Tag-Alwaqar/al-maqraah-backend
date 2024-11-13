@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { ClsService } from 'nestjs-cls';
@@ -34,18 +33,23 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.enableCors({
-    origin: true, // true allows all origins
+  const corsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
     credentials: true,
-  });
+  };
 
-  const options = new DocumentBuilder()
+  app.enableCors(corsOptions);
+
+  const swaggerOptions = new DocumentBuilder()
     .setTitle('Tag Al-waqaar')
     .setDescription('API Documentation for Tag Al-waqaar')
     .setVersion('1.0')
     .build();
 
-  const document = SwaggerModule.createDocument(app, options);
+  const document = SwaggerModule.createDocument(app, swaggerOptions);
 
   SwaggerModule.setup('docs', app, document);
 
