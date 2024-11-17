@@ -1,6 +1,11 @@
-version: '3.9'
-
 services:
+  back:
+    container_name: back
+    build: .
+    restart: always
+    networks:
+    - proxy_default
+
   postgres:
     image: postgres:16
     restart: always
@@ -12,6 +17,12 @@ services:
       - ${DB_PORT}:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+    - proxy_default
 
 volumes:
   postgres_data:
+
+networks:
+  proxy_default:
+    external: true
