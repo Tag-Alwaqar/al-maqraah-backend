@@ -42,9 +42,15 @@ export class GroupController {
   }
 
   @Get('appointments')
-  @AdminAuth()
-  async getAppointments(@Query() queryDto: AppointmentsQueryDto) {
-    const appointments = await this.groupsService.getAppointments(queryDto);
+  @UserAuth()
+  async getAppointments(
+    @Query() queryDto: AppointmentsQueryDto,
+    @User('id') callingUserId: number,
+  ) {
+    const appointments = await this.groupsService.getAppointments(
+      queryDto,
+      callingUserId,
+    );
 
     return appointments.map(
       (appointment) => new GroupAppointmentDto(appointment),

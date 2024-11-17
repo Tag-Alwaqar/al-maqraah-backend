@@ -47,8 +47,12 @@ export class AdminsService {
     });
     await this.adminsRepository.save(admin);
 
+    console.log('adminnn', admin);
+
     user.admin = admin;
     await this.usersService.update(user);
+
+    console.log('userrr', user);
   }
 
   async findOneById(id: number): Promise<Admin | null> {

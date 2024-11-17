@@ -147,7 +147,12 @@ export class GroupsService {
     });
   }
 
-  async getAppointments(queryDto: AppointmentsQueryDto) {
+  async getAppointments(queryDto: AppointmentsQueryDto, callingUserId: number) {
+    const callingUser = await this.usersService.findOneById(callingUserId);
+
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
     const query = this.groupAppointmentsRepository
       .createQueryBuilder('appointment')
       .leftJoinAndSelect('appointment.group', 'group');
@@ -160,6 +165,25 @@ export class GroupsService {
 
     if (isDefined(queryDto.group_id))
       query.andWhere('group.id = :group_id', { group_id: queryDto.group_id });
+
+    if (callingUser.teacher)
+      query.andWhere('group.gender = :gender', { gender: callingUser.gender });
+
+    if (callingUser.student) {
+      const student = await this.studentsService.findOneById(
+        callingUser.student.id,
+      );
+
+      const studentGroupsIds = student.groups.map((group) => group.id);
+
+      if (studentGroupsIds.length === 0) {
+        throw new NotFoundException('لا يوجد لديك مجموعات');
+      }
+
+      query.andWhere('group.id IN (:...ids)', {
+        ids: studentGroupsIds,
+      });
+    }
 
     return await query.getMany();
   }
