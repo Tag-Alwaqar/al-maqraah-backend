@@ -4,6 +4,7 @@
     "user",
     "session",
     "admin",
-    "group"
+    "group",
+    "fees"
   ]
 }

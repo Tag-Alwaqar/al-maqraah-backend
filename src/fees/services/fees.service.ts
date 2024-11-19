@@ -17,6 +17,7 @@ import { FeesQueryDto } from '@fees/dto/fees-query.dto';
 import { FeesDto } from '@fees/dto/fees.dto';
 import { UpdateFeesDto } from '@fees/dto/update-fees.dto';
 import { AdminsService } from '@user/services/admin.service';
+import { UsersService } from '@user/services/user.service';
 
 @Injectable()
 export class FeesService {
@@ -27,6 +28,7 @@ export class FeesService {
     private readonly groupsService: GroupsService,
     private readonly studentsService: StudentsService,
     private readonly adminsService: AdminsService,
+    private readonly usersService: UsersService,
   ) {}
 
   async create(data: CreateFeesDto, adminUser: User) {
@@ -65,12 +67,15 @@ export class FeesService {
     feesQuery: FeesQueryDto,
     callingUserId: number,
   ) {
-    const currentAdmin = await this.adminsService.findOne({
-      user_id: callingUserId,
-    });
+    const callingUser = await this.usersService.findOneById(callingUserId);
 
-    if (!currentAdmin.is_super)
+    if (!callingUser) {
+      throw new NotFoundException('هذا المستخدم غير موجود');
+    }
+
+    if (callingUser.teacher) {
       throw new ForbiddenException('لا يمكنك الوصول إلى هذه البيانات');
+    }
 
     const query = this.feesRepository
       .createQueryBuilder('fees')
@@ -117,6 +122,12 @@ export class FeesService {
       query.andWhere('fees.month = :month', {
         month: feesQuery.month,
       });
+
+    if (callingUser.student) {
+      query.andWhere('student.id = :student_id', {
+        student_id: callingUser.student.id,
+      });
+    }
 
     query.orderBy('fees.created_at', 'DESC');
 

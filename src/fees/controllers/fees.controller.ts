@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AdminAuth } from '@user/authentication/decorators/admin-auth.decorator';
+import { UserAuth } from '@user/authentication/decorators/user-auth.decorator';
 import { User } from '@user/authentication/decorators/user.decorator';
 import { UsersService } from '@user/services/user.service';
 
@@ -28,7 +29,7 @@ export class FeesController {
   ) {}
 
   @Get('')
-  @AdminAuth()
+  @UserAuth()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
     @Query() feesQueryDto: FeesQueryDto,
